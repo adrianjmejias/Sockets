@@ -15,10 +15,8 @@ int main(int argc, char const *argv[])
     int tam;
     char buffer[100], bufferRes[100];
     if(argv[1] == NULL)
-    {
-        printf("Error por falta de parametros.\n");
-        return 0;
-    }
+        DieWithError("Error por falta de parametros.\n")
+
     int puerto = strtoul(argv[1], NULL, 10);
     struct sockaddr_in server;//Infromacion del servidor
     struct sockaddr_in client;//Infromacion del cliente
@@ -38,17 +36,14 @@ int main(int argc, char const *argv[])
     while(1)
     {
         tam = sizeof(struct sockaddr_in);
-        if ((id_new = accept(id,(struct sockaddr *)&client,&tam)) == -1) {
-            printf("error en accept()\n");
-            exit(-1);
-        }
+        if ((id_new = accept(id,(struct sockaddr *)&client,&tam)) == -1)
+            DieWithError("error en accept()\n");
+        
         printf("Se obtuvo una conexión desde %s\n", inet_ntoa(client.sin_addr));
 		
 		//read(id_new, buffer, 100);
-        if ((asd =recv(id_new, opcion, 1, 0)) == -1) {
-            printf("Error en recv() \n");
-            exit(-1);
-		}
+        f ((asd =recv(id_new, opcion, 1, 0)) == -1)
+            DieWithError("Error en recv() \n")
 		
         if(strcmp(opcion,"4") == 0)
         {
@@ -72,17 +67,12 @@ int main(int argc, char const *argv[])
         //printf("\nMensaje del cliente: %s\n\n", buffer);
 
 
-        if(strcmp(buffer,"hola") == 0) strcpy(bufferRes,"vale");
-        else if(strcmp(buffer,"epa") == 0) strcpy(bufferRes,"epale");
-        else if(strcmp(buffer,"te quiero") == 0) strcpy(bufferRes,"yo no");
-		else strcpy(bufferRes, "Mensaje recibido");
+		strcpy(bufferRes, "Mensaje recibido");
 		
         send(id_new, bufferRes, 100,0);
 
         close(id_new);
     }
-
-
     close(id);
     return 0;
 }

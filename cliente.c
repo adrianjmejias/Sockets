@@ -25,18 +25,17 @@ int main(int argc, char const *argv[])
     struct sockaddr_in server;
     struct sockaddr *serv_addr;
     struct hostent *he;
-    he = gethostbyname(argv[1]);
-    if (he==NULL)
-    {
-        printf("Error de gethostbyname().\n");
-        exit(-1);
-    }
+
+    if((he = gethostbyname(argv[1])) == NULL)
+        DieWithError("Error de gethostbyname().\n");
 
     int puerto = strtoul(argv[2], NULL, 10);
+
     //Estructura del servidor
     server.sin_family = AF_INET;
     server.sin_port = htons(puerto);
     server.sin_addr = *((struct in_addr *)he->h_addr);
+
     bzero(&(server.sin_zero), 8);
 
 	printf("MENU\n");
@@ -55,12 +54,7 @@ int main(int argc, char const *argv[])
         id = socket(AF_INET, SOCK_STREAM, 0);
         //scanf("%*c%[^\n]", buffer);
         //Nos conectamos al servidor
-        if(connect(id, (struct sockaddr *)&server,
-                   sizeof(struct sockaddr)) == -1)
-        {
-            printf("connect() error\n");
-            exit(-1);
-        }
+        if(connect(id, (struct sockaddr *) &server, sizeof(struct sockaddr)) == -1) DieWithError("connect() error\n");
         //write(id, buffer, 100);
         send(id, opcion, 1, 0);
         if(strcmp(buffer,"exit") == 0)
@@ -69,10 +63,8 @@ int main(int argc, char const *argv[])
             break;
         }
         if ((asd =recv(id, bufferRes, 100, 0)) == -1)
-        {
-            printf("Error en recv() \n");
-            exit(-1);
-        }
+            DieWithError("Error en recv() \n");
+       
         printf("\nRespuesta del servidor: %s\n\n", bufferRes);
 
     }
