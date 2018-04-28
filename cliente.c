@@ -12,12 +12,15 @@ int main(int argc, char const *argv[])
     //cliente
     int id,asd; // el identificador retornado se usa en todas las funciones de los sockets
     char buffer[100], bufferRes[100];
-
+    char opcion;
+    DIR dir;
+    struct dirent* dent;
     if(argv[2] == NULL)
     {
         printf("Error por falta de par�metros\n");
         return 0;/*Se termina el programa*/
     }
+	
 
     struct sockaddr_in server;
     struct sockaddr *serv_addr;
@@ -36,13 +39,21 @@ int main(int argc, char const *argv[])
     server.sin_addr = *((struct in_addr *)he->h_addr);
     bzero(&(server.sin_zero), 8);
 
+	printf("MENU\n");
+	printf("1) COMPROBAR ARCHIVOS\n");
+	printf("2) AGREGAR ARCHIVO\n");
+	printf("3) ELIMINAR ARCHIVO\n");
+	printf("4) SALIR\n");
+	
+	
     //Socket cliente
     while(1)
     {
+		printf("ESCOJA UNA OPCION: ")
+		scanf("%c", &opcion);
         //Creamos el socket
         id = socket(AF_INET, SOCK_STREAM, 0);
-
-        scanf("%*c%[^\n]", buffer);
+        //scanf("%*c%[^\n]", buffer);
         //Nos conectamos al servidor
         if(connect(id, (struct sockaddr *)&server,
                    sizeof(struct sockaddr)) == -1)
@@ -51,7 +62,7 @@ int main(int argc, char const *argv[])
             exit(-1);
         }
         //write(id, buffer, 100);
-        send(id, buffer, 100, 0);
+        send(id, opcion, 1, 0);
         if(strcmp(buffer,"exit") == 0)
         {
             printf("Se termina el ciclo.\n");
@@ -70,3 +81,4 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
+
