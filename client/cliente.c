@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
 {
     //cliente
     int id,asd; // el identificador retornado se usa en todas las funciones de los sockets
-    char opcion[2], bufferRes[200];
+    char opcion[2], bufferRes[2];
     
     if(argv[1] == NULL || argv[2] == NULL)
     {
@@ -70,7 +70,7 @@ int main(int argc, char const *argv[])
             break;
         }
         
-        if ((asd =recv(id, bufferRes, 200, 0)) == -1)
+        if ((asd =recv(id, bufferRes, 2, 0)) == -1)
         {
              printf("Error en recv() \n");
              exit(-1);

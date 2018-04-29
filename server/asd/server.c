@@ -10,16 +10,10 @@
 #include "colaT.h"
 #define PATHSIZE 250
 
-typedef struct comparaciones{
-    Cola nom;
-    int numDir;
-    int numArch;
-} comp;
 
-comp recorrerArchivos(char* path)
+void recorrerArchivos(char* path)
 {
     /*ignora esto(??*/
-    comp c;
     Cola aVisitar, nombres;
     struct dirent* dent;
     DIR *dirp;
@@ -30,44 +24,33 @@ comp recorrerArchivos(char* path)
     Insertar(&aVisitar, path, NULL);
 
     //dirp = opendir(path);
-    //Recorre los directorios
+    nodo nodoAVisitar = Desencolar(&aVisitar);
+    dirp = opendir(nodoAVisitar.path);
+    
     while(1)
-    {   
-        nodo nodoAVisitar = Desencolar(&aVisitar);
-        dirp = opendir(nodoAVisitar.path);
-        
-        //Recorre archivos dentro del directorio
-        while(1)
+    {
+        dent = readdir(dirp);
+        if (dent == NULL) break;
+        char *pathGen= malloc(PATHSIZE* sizeof(char));
+        sprintf(pathGen, "%s/%s", nodoAVisitar.path, dent->d_name);
+
+        if (dent->d_type == DT_DIR)
         {
-            dent = readdir(dirp);
-            if (dent == NULL) break;
-            char *pathGen= malloc(PATHSIZE* sizeof(char));
-            sprintf(pathGen, "%s/%s", nodoAVisitar.path, dent->d_name);
-
-            if (dent->d_type == DT_DIR)
-            {
-                if(strcmp(dent->d_name,".")!=0 && strcmp(dent->d_name,"..")!=0)
-                { 
-                    Insertar(&aVisitar, pathGen, NULL);
-                    contDir++;
-                }   
-            }
-            else
-            {
-                Insertar(&nombres, pathGen, NULL);
-                contArch++;
-            }
+            if(strcmp(dent->d_name,".")!=0 && strcmp(dent->d_name,"..")!=0)
+            { 
+                Insertar(&aVisitar, pathGen, NULL);
+                contDir++;
+            }   
         }
-
-        if (colaVacia(&aVisitar)) break;
+        else if (dent->d_type == DT_REG)
+        {
+            Insertar(&nombres, pathGen, NULL);
+            contArch++;
+        }
     }
-
-    c.nom = nombres;
-    c.numDir = contDir;
-    c.numArch = contArch;/*
+    Leer(&nombres);
     printf("Cantidad de directorios: %d\n", contDir);
-    printf("Cantidad de archivos: %d\n", contArch);*/
-    return c;
+    printf("Cantidad de archivos: %d\n", contArch);
 }
 
 int main(int argc, char const *argv[])
@@ -127,11 +110,7 @@ int main(int argc, char const *argv[])
         
         if(strcmp(opcion,"1") == 0) 
         {
-            
-            comp client = recorrerArchivos("client");
-            Leer(&client.nom);
-            comp server = recorrerArchivos("server");
-            Leer(&server.nom);
+            recorrerArchivos("./client");
         }
         else if(strcmp(opcion,"2") == 0) 
         {
@@ -143,7 +122,7 @@ int main(int argc, char const *argv[])
         }
         else 
         {
-            strcpy(bufferRes, "Esta opción aun no es válida.\n");
+            strcpy(bufferRes, "Esta opción aun no está implementada.\n");
         }
         
         send(id_new, bufferRes, 200,0);
