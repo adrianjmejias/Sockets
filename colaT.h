@@ -103,3 +103,21 @@ nodo Desencolar(Cola *cola)
   }
    
 }
+
+int sonIguales(Cola *A, Cola *B)
+{
+    int cont = A->tamanio;
+    nodo *nodoActualA = A->primero;
+    nodo *nodoActualB = B->primero;
+
+    while(cont > 0)
+    {
+
+        if (strcmp(nodoActualA->path, nodoActualB->path)) return 0;
+        nodoActualA = nodoActualA->siguiente;
+        nodoActualB = nodoActualB->siguiente;
+        cont--;
+    }
+
+    return 1;
+}

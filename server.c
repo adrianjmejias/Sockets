@@ -16,6 +16,18 @@ typedef struct comparaciones{
     int numArch;
 } comp;
 
+char* substr(char* cadena, int comienzo, int longitud)
+{
+    if (longitud == 0) 
+        longitud = strlen(cadena)-comienzo;
+    
+    char *nuevo = (char*)malloc(sizeof(char) * (longitud+1));
+    nuevo[longitud] = '\0';
+    strncpy(nuevo, cadena + comienzo, longitud);
+    
+    return nuevo;
+}
+
 comp recorrerArchivos(char* path)
 {
     /*ignora esto(??*/
@@ -54,7 +66,8 @@ comp recorrerArchivos(char* path)
             }
             else
             {
-                Insertar(&nombres, pathGen, NULL);
+                char *nombre = substr(pathGen, 6, strlen(pathGen));
+                Insertar(&nombres, nombre, NULL);
                 contArch++;
             }
         }
@@ -129,21 +142,41 @@ int main(int argc, char const *argv[])
         {
             
             comp client = recorrerArchivos("client");
-            Leer(&client.nom);
+            //Leer(&client.nom);
             comp server = recorrerArchivos("server");
-            Leer(&server.nom);
+            //Leer(&server.nom);
+
+            //Primer filtro
+            if (client.numDir != server.numDir && client.numArch != server.numArch)
+            {
+                printf("No son iguales.\n\n");
+            }
+            //Segundo filto
+            else if (!sonIguales(&client.nom, &server.nom))
+            {
+                printf("No son iguales.\n\n");
+            }
+            //Tercer filtro
+            else if (0)
+            {
+                /* Comprobar contenido*/
+            }
+            else
+            {
+                printf("Las carpetas client y server son iguales!!\n\n");
+            }
         }
         else if(strcmp(opcion,"2") == 0) 
         {
-            strcpy(bufferRes,"Esta opción aun no está implementada.\n");      
+            strcpy(bufferRes,"Esta opción aun no está implementada.\n\n");      
         }
         else if(strcmp(opcion,"3") == 0) 
         {
-            strcpy(bufferRes,"Esta opción aun no está implementada.\n");
+            strcpy(bufferRes,"Esta opción aun no está implementada.\n\n");
         }
         else 
         {
-            strcpy(bufferRes, "Esta opción aun no es válida.\n");
+            strcpy(bufferRes, "Esta opción aun no es válida.\n\n");
         }
         
         send(id_new, bufferRes, 200,0);
