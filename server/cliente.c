@@ -11,7 +11,7 @@
 int main(int argc, char const *argv[])
 {
     //cliente
-    int id,asd; // el identificador retornado se usa en todas las funciones de los sockets
+    int id, asd; // el identificador retornado se usa en todas las funciones de los sockets
     char opcion[2], bufferRes[2];
     
     if(argv[1] == NULL || argv[2] == NULL)
