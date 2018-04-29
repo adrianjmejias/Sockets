@@ -20,10 +20,10 @@ void Inicializar ( Cola *cola){
 int colaVacia(const Cola *cola)
 {
   int retvar=0;
-  ;//printf("CV");
+  ;;
    if(cola->primero == NULL)
     retvar=1;
-  //printf("CV");
+  ;
   
     return retvar;
 }
@@ -37,7 +37,7 @@ void Insertar( Cola *cola, char * _path, char *_hash)
   nuevoNodo->path = _path;
   nuevoNodo->hash = _hash;
   nuevoNodo->siguiente = NULL;
-  //printf("I");
+  
   if (cola->primero==NULL){
     cola->primero = nuevoNodo;
   }else{
@@ -46,16 +46,16 @@ void Insertar( Cola *cola, char * _path, char *_hash)
 
   cola->ultimo = nuevoNodo;
   cola->tamanio++;
-  //printf("I");
+  
   
 }
 
 void Leer(const Cola *cola)
 {
-  //printf("L");
+  
    if (cola->primero==NULL){
-     //printf("La cola está vacia\n");
-      //printf("L");
+     
+      
       
       return;  
    }
@@ -69,21 +69,20 @@ void Leer(const Cola *cola)
       nodoActual = nodoActual->siguiente;
       cont--;
     }
-    //printf("L");
+    
     
 }
 
 nodo Desencolar(Cola *cola)
 {
   nodo ret;
-  //printf("D");
-  if (cola->primero==NULL){
-    //printf("D");
-    
-    //printf("No hay cola.\n");
+  
+  if (cola->primero==NULL)
+  {
     ret.path= NULL;
     return ret;
-  }else
+  }
+  else
   {
     nodo *nodoAux;
     cola->tamanio--;
@@ -95,7 +94,7 @@ nodo Desencolar(Cola *cola)
   {
     cola->ultimo = NULL;
   }
-  //printf("D");
+  
   
   ret= *nodoAux;
   free(nodoAux);   
@@ -104,9 +103,45 @@ nodo Desencolar(Cola *cola)
    
 }
 
+
+void Nodo_Swap(nodo *nodo_a, nodo *nodo_b)
+{
+    char *path_temp = nodo_a->path;
+    nodo_a->path = nodo_b->path;
+    nodo_b->path = path_temp;
+}
+
+
+
+void Cola_Ordenar(Cola *cola)
+{
+    nodo *nodo_actual;
+    int ii, jj, tam_cola = cola->tamanio;
+
+    for (ii = 1; ii < tam_cola; ++ii)
+    {
+        nodo_actual = cola->primero;
+        for (jj = 0; jj < tam_cola - ii; ++jj)
+        {
+            if (strcmp(nodo_actual->siguiente->path, nodo_actual->path) > 0)
+            {
+                Nodo_Swap(nodo_actual, nodo_actual->siguiente);
+            }
+            nodo_actual = nodo_actual->siguiente;
+        }
+
+        //Print_Proceso(nodo_actual->data);
+        //nodo_actual = nodo_actual->siguiente;
+    }
+    //return cola;
+}
+
 int sonIguales(Cola *A, Cola *B)
 {
     int cont = A->tamanio;
+    Cola_Ordenar(A);
+    Cola_Ordenar(B);
+
     nodo *nodoActualA = A->primero;
     nodo *nodoActualB = B->primero;
 

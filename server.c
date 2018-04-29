@@ -151,7 +151,7 @@ int main(int argc, char const *argv[])
             {
                 printf("No son iguales.\n\n");
             }
-            //Segundo filto
+            //Segundo filtro
             else if (!sonIguales(&client.nom, &server.nom))
             {
                 printf("No son iguales.\n\n");
