@@ -9,8 +9,6 @@ typedef struct col {
    nodo *ultimo; //Puntero que apunta al ultimo elemento de la cola
    int tamanio; //Tamaño de la cola
 } Cola;
-  
-extern Cola aVisitar, visitado;
 
 /* Funciones con colas: */
 void Inicializar ( Cola *cola){
