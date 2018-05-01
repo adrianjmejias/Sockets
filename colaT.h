@@ -17,17 +17,18 @@ void Inicializar ( Cola *cola){
   cola->tamanio = 0;
 }
 
+//****************************************************************************************************************
 int colaVacia(const Cola *cola)
 {
   int retvar=0;
-  ;;
+  
    if(cola->primero == NULL)
     retvar=1;
-  ;
   
     return retvar;
 }
 
+//****************************************************************************************************************
 void Insertar( Cola *cola, char * _path, char *_hash)
 {
 
@@ -50,13 +51,11 @@ void Insertar( Cola *cola, char * _path, char *_hash)
   
 }
 
+//****************************************************************************************************************
 void Leer(const Cola *cola)
 {
   
    if (cola->primero==NULL){
-     
-      
-      
       return;  
    }
     
@@ -73,6 +72,7 @@ void Leer(const Cola *cola)
     
 }
 
+//****************************************************************************************************************
 nodo Desencolar(Cola *cola)
 {
   nodo ret;
@@ -103,7 +103,7 @@ nodo Desencolar(Cola *cola)
    
 }
 
-
+//****************************************************************************************************************
 void Nodo_Swap(nodo *nodo_a, nodo *nodo_b)
 {
     char *path_temp = nodo_a->path;
@@ -111,8 +111,7 @@ void Nodo_Swap(nodo *nodo_a, nodo *nodo_b)
     nodo_b->path = path_temp;
 }
 
-
-
+//****************************************************************************************************************
 void Cola_Ordenar(Cola *cola)
 {
     nodo *nodo_actual;
@@ -129,13 +128,10 @@ void Cola_Ordenar(Cola *cola)
             }
             nodo_actual = nodo_actual->siguiente;
         }
-
-        //Print_Proceso(nodo_actual->data);
-        //nodo_actual = nodo_actual->siguiente;
     }
-    //return cola;
 }
 
+//****************************************************************************************************************
 int sonIguales(Cola *A, Cola *B)
 {
     int cont = A->tamanio;
