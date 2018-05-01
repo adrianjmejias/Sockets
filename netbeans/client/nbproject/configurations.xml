@@ -36,10 +36,8 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <standard>10</standard>
-          <incFile>
-            <pElem>../utility/colaT.h</pElem>
-          </incFile>
+          <standard>2</standard>
+          <warningLevel>2</warningLevel>
         </cTool>
       </compileType>
       <item path="client.c" ex="false" tool="0" flavor2="0">

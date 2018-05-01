@@ -1,70 +1,5 @@
+#include "../utility//colaT.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <dirent.h>
-#include "../utility/colaT.h"
-#define PATHSIZE 300
-#define nullptr NULL
-void recorrerArchivos(char * path)
-{
-    /* ignora esto(?? */
-    Cola aVisitar, nombres;
-
-    struct dirent *dent;
-
-
-    DIR * dirp;
-    int   contDir  = 0,
-          contArch = 0;
-
-    Inicializar(&aVisitar);
-    Inicializar(&nombres);
-    Insertar(&aVisitar, path, NULL);
-
-    // dirp = opendir(path);
-    nodo nodoAVisitar = Desencolar(&aVisitar);
-
-    dirp = opendir(nodoAVisitar.path);
-
-    while (1)
-    {
-        dent = readdir(dirp);
-
-        if (dent == NULL)
-        {
-            break;
-        }
-
-        char * pathGen = malloc(PATHSIZE * sizeof(char));
-
-        sprintf(pathGen, "%s/%s", nodoAVisitar.path, dent -> d_name);
-
-        if (dent -> d_type == DT_DIR)
-        {
-            if ((strcmp(dent -> d_name, ".") != 0) && (strcmp(dent -> d_name, "..") != 0))
-            {
-                Insertar(&aVisitar, pathGen, NULL);
-                contDir++;
-            }
-        }
-        else if (dent -> d_type == DT_REG)
-        {
-            Insertar(&nombres, pathGen, NULL);
-            contArch++;
-        }
-    }
-
-    Leer(&nombres);
-    printf("Cantidad de directorios: %d\n", contDir);
-    printf("Cantidad de archivos: %d\n", contArch);
-}
 
 int main(int        argc,
          char const *argv[])
@@ -75,9 +10,7 @@ int main(int        argc,
 
     if (argv[1] == NULL)
     {
-        printf("Error por falta de parametros.\n");
-
-        return 0;
+        DeathByError("Error por falta de parametros.\n");
     }
 
     int puerto = strtoul(argv[1], NULL, 10);
@@ -104,11 +37,9 @@ int main(int        argc,
     while (1)
     {
         tam = sizeof(struct sockaddr_in);
-
         if ((id_new = accept(id, (struct sockaddr*) &client, &tam)) == -1)
         {
-            printf("error en accept()\n");
-            exit(-1);
+            DeathByError("error en accept()\n");
         }
 
         printf("Se obtuvo una conexiÃ³n desde %s\n", inet_ntoa(client.sin_addr));
@@ -116,8 +47,7 @@ int main(int        argc,
         // read(id_new, opcion, 2);
         if ((asd = recv(id_new, opcion, 2, 0)) == -1)
         {
-            printf("Error en recv() \n");
-            exit(-1);
+            DeathByError("Error en recv() \n");
         }
 
         if (strcmp(opcion, "4") == 0)
@@ -131,7 +61,11 @@ int main(int        argc,
 
         if (strcmp(opcion, "1") == 0)
         {
-            recorrerArchivos("./client");
+            Cola archivosClient = *recorrerArchivos("./client");
+            Leer(&archivosClient);
+            
+            
+            
         }
         else if (strcmp(opcion, "2") == 0)
         {

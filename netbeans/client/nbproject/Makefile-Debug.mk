@@ -65,7 +65,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/client.exe: ${OBJECTFILES}
 ${OBJECTDIR}/client.o: client.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g -include ../utility/colaT.h -std=c11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/client.o client.c
+	$(COMPILE.c) -g -Wall -std=c89 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/client.o client.c
 
 # Subprojects
 .build-subprojects:

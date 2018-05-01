@@ -1,15 +1,5 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <dirent.h>
-#include "../utility/colaT.h"
-
+#include "../utility//colaT.h"
 int main(int        argc,
          char const *argv[])
 {
@@ -17,27 +7,21 @@ int main(int        argc,
     int  id, asd;    // el identificador retornado se usa en todas las funciones de los sockets
     char opcion[2], bufferRes[2];
 
-    if ((argv[1] == NULL) || (argv[2] == NULL))
+    if (argc != 3)
     {
         printf("Error por falta de parÃ¡metros\n");
-
         return 0;    /* Se termina el programa */
     }
 
     struct sockaddr_in server;
-
-
     struct sockaddr *serv_addr;
-
-
     struct hostent *he;
-
 
     he = gethostbyname(argv[1]);
 
     if (he == NULL)
     {
-        printf("Error de gethostbyname().\n");
+         DeathByError("Error de gethostbyname().\n");
         exit(-1);
     }
 
@@ -62,19 +46,19 @@ int main(int        argc,
     {
         // Creamos el socket
         id = socket(AF_INET, SOCK_STREAM, 0);
+        
 
-        // OpciÃ³n del menu
-        printf("ESCOJA UNA OPCION: ");
-        scanf("%s", opcion);
 
         // Nos conectamos al servidor
         if (connect(id, (struct sockaddr*) &server, sizeof(struct sockaddr)) == -1)
         {
-            printf("Error en connect()\n");
-            exit(-1);
+            DeathByError("Error en connect()\n");
         }
 
-        // write(id, opcion, 2);
+        // OpciÃ³n del menu
+        printf("ESCOJA UNA OPCION: ");
+        scanf("%s", opcion);
+        
         send(id, opcion, 2, 0);
 
         if (strcmp(opcion, "4") == 0)
@@ -86,8 +70,7 @@ int main(int        argc,
 
         if ((asd = recv(id, bufferRes, 2, 0)) == -1)
         {
-            printf("Error en recv() \n");
-            exit(-1);
+            DeathByError("Error en recv() \n");
         }
 
         printf("\nRespuesta del servidor: %s\n\n", bufferRes);
