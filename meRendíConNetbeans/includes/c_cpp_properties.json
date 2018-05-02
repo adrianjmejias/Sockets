@@ -4,14 +4,14 @@
             "name": "Win32",
             "includePath": [
                 "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include",
-                "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++"
+                "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "",
                 "path": [
                     "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include",
-                    "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include/c++"
+                    "C:/cygwin64/lib/gcc/x86_64-pc-cygwin/6.4.0/include"
                 ]
             },
             "intelliSenseMode": "msvc-x64",

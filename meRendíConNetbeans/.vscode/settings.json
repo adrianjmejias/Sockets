@@ -8,6 +8,7 @@
         "cstdio": "c",
         "reent.h": "c",
         "unistd.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "todos_los_includes.h": "c"
     }
 }

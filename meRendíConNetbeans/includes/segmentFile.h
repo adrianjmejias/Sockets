@@ -1,13 +1,15 @@
-#include "./colaT.h"
 #ifndef SEGMENTFILE_H
 #define SEGMENTFILE_H
 
+#include "./colaT.h"
+#include "./todos_los_includes.h"
+
     Cola* segmentFile(char *path){
-         FILE file;
+         FILE *file;
         
         if((file = fopen(path, "r")) == NULL)
         {
-            DieByError("Error al abrir archivo %s", path);
+            DeathByError("Error al abrir archivo");
         }else
         {
             Cola *out = malloc(sizeof(Cola));
@@ -38,9 +40,9 @@
     }
 
     bool compareFiles(char *buffa, char *buffb){
-        
-        while( i < SEGMENT_SIZE){
-            if(buffa[i] != buffb) return false;
+        int i = 0;
+        while( i < PACKET_SIZE){
+            if(buffa[i] != buffb[i]) return false;
         }
         return true;
     }
