@@ -1,5 +1,6 @@
-#include "includes/colaT.h"
+#include "./includes/colaT.h"
 #include "includes/segmentFile.h"
+
 
 int main(int        argc,
          char const *argv[])

@@ -1,6 +1,26 @@
 
 #include "includes/colaT.h"
-#include "includes/segmentFile.h2"
+#include "includes/segmentFile.h"
+
+
+
+void opt_comprobar_1(){
+
+}
+
+void opt_agregar_2(){
+
+}
+
+void opt_eliminar_3(){
+
+}
+
+void opt_salir_4(){
+
+}
+
+
 int main(int        argc,
          char const *argv[])
 {

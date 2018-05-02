@@ -14,6 +14,7 @@
 #ifndef COLAT_H
 #define COLAT_H
 
+#include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +31,10 @@
 #define PACKET_SIZE (1024) * 10 //10 MEGAS 
 #define PATH_SIZE PACKET_SIZE
 #define DeathByError(printfParam) printf(printfParam); exit(-1)
-
+#define COMPROBAR 1
+#define AGREGAR 2
+#define ELIMINAR 3
+#define SALIR 4
 
 typedef struct Nodo
 {

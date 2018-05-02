@@ -1,12 +1,9 @@
-#include <stdio.h>
-
-#include "todos_los_includes.h"
-#include "colaT.h"
+#include "./colaT.h"
 #ifndef SEGMENTFILE_H
 #define SEGMENTFILE_H
 
     Cola* segmentFile(char *path){
-        File file;
+         FILE file;
         
         if((file = fopen(path, "r")) == NULL)
         {

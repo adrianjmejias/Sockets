@@ -1,5 +1,13 @@
 {
     "files.associations": {
-        "colat.h": "c"
+        "colat.h": "c",
+        "segmentfile.h": "c",
+        "math.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "cstdio": "c",
+        "reent.h": "c",
+        "unistd.h": "c",
+        "string.h": "c"
     }
 }
