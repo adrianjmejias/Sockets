@@ -14,9 +14,12 @@
 #include <netdb.h>
 #include <dirent.h>
 
+/*funcion del hash modo libreria*/
+#define HASH_SIZE 33
+int MDFile(char* filename, char hashValue[HASH_SIZE]);
 
 #define PACKET_SIZE 1024 //1 MEGAS
-#define PATHSIZE PACKET_SIZE
+#define PATHSIZE PACKET_SIZE // debería tener un _ pero 
 #define DeathByError(printfParam) printf(printfParam); exit(-1)
 #define COMPROBAR 1
 #define AGREGAR 2

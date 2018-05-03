@@ -9,6 +9,7 @@
         "reent.h": "c",
         "unistd.h": "c",
         "string.h": "c",
-        "todos_los_includes.h": "c"
+        "todos_los_includes.h": "c",
+        "dirent.h": "c"
     }
 }

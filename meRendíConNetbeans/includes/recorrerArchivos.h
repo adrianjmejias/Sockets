@@ -44,7 +44,7 @@ comp recorrerArchivos(char* path)
         {
             dent = readdir(dirp);
             if (dent == NULL) break;
-            char *pathGen= malloc(PATHSIZE* sizeof(char));
+            char *pathGen= malloc(PACKET_SIZE* sizeof(char));
             sprintf(pathGen, "%s/%s", nodoAVisitar.path, dent->d_name);
 
             if (dent->d_type == DT_DIR)

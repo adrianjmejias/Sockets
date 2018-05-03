@@ -2,11 +2,12 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
+
 int accionesMenu(int id, struct sockaddr_in server)
 {
     int recibido;
     char opcion[2];
-    char bufferRes[200];
+    char bufferRes[PACKET_SIZE];
     //Opción del menu
     printf("ESCOJA UNA OPCION: ");
     scanf("%s", opcion);
@@ -24,7 +25,6 @@ int accionesMenu(int id, struct sockaddr_in server)
     if(strcmp(opcion,"1") == 0)
     {
         comp client = recorrerArchivos("client");
-        
         //Primer filtro
         
         //Numero de directorios
@@ -43,7 +43,13 @@ int accionesMenu(int id, struct sockaddr_in server)
         while(cont > 0)
         {
             strcpy(nombre, nodoActual -> path);
-            send(id, nombre, 200, 0);
+            send(id, nombre, strlen(nombre), 0);
+            
+            //mandar hash
+            nodoActual->hash = malloc(sizeof(char) * HASH_SIZE);//64 es el hash size
+            MDFile(nodoActual->path, nodoActual->hash);
+            send(id, nodoActual->hash, strlen(nodoActual->hash), 0);
+
 
             nodoActual = nodoActual -> siguiente;
             cont--;
@@ -57,7 +63,7 @@ int accionesMenu(int id, struct sockaddr_in server)
         return 1;
     }
     
-    if ((recibido = recv(id, bufferRes, 200, 0)) == -1)
+    if ((recibido = recv(id, bufferRes, PACKET_SIZE, 0)) == -1)
     {
          printf("Error en recv() \n");
          exit(-1);
@@ -106,7 +112,6 @@ int main(int argc, char const *argv[])
     //Socket cliente
     while(1)
     {   
-        //Creamos el socket
         id = socket(AF_INET, SOCK_STREAM, 0);
 
         if(accionesMenu(id, server)) break;

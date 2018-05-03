@@ -151,13 +151,20 @@ int sonIguales( Cola * colaA,  Cola * colaB)
 
     int cont = colaA -> tamanio;
 
+    Leer(colaA);
+
+    printf("-------------------------------------------");
+
+    Leer(colaB);
     nodo * nodoActualA = colaA -> primero;
     nodo * nodoActualB = colaB -> primero;
 
     while (cont > 0)
     {
         if (strcmp(nodoActualA -> path, nodoActualB -> path)) return 0;
-
+        char hashB[HASH_SIZE];
+        MDFile(nodoActualB->path, hashB);
+        if(strcmp(nodoActualA->hash, hashB)) return 0;
         nodoActualA = nodoActualA -> siguiente;
         nodoActualB = nodoActualB -> siguiente;
 

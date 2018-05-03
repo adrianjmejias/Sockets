@@ -8,21 +8,25 @@ int igualesNombre(Cola * cola, int id_new)
     int    cont       = cola -> tamanio;
     nodo * nodoActual = cola -> primero;
     Cola colaC;
-    char nombre[200];
+    char nombre[PACKET_SIZE], hash[HASH_SIZE];
     
     Inicializar(&colaC);
 
     while (cont > 0)
     {
 
-        if ((recibido = recv(id_new, nombre, 200, 0)) == -1)
+        if ((recibido = recv(id_new, nombre, PACKET_SIZE, 0)) == -1)
         {
-            printf("Error en recv() \n");
-            exit(-1);
+            DeathByError("Error en recv() path\n");
         }
 
-        Insertar(&colaC, nombre, NULL);
-
+        //recibir hash
+        if ((recv(id_new, hash, HASH_SIZE, 0) == -1)
+        {
+            DeathByError("Error en recv() hash\n");
+        }
+        Insertar(&colaC, nombre, hash);
+        cont--;
     }
 
     if (sonIguales(&colaC, cola)) return 1;
@@ -33,9 +37,9 @@ int igualesNombre(Cola * cola, int id_new)
 int accionesServer(int id_new)
 {
     int recibido; // el identificador retornado se usa en todas las funciones de los sockets
-    char opcion[2], bufferRes[200];
+    char opcion[2], bufferRes[PACKET_SIZE];
 
-    if ((recibido =recv(id_new, opcion, 2, 0)) == -1)
+    if ((recibido = recv(id_new, opcion, 2, 0)) == -1)
     {
         printf("Error en recv() \n");
         exit(-1);
@@ -159,7 +163,7 @@ int main(int argc, char const *argv[])
 
         printf("Se obtuvo una conexión desde %s\n", inet_ntoa(client.sin_addr));
         //read(id_new, opcion, 2);
-        if (accionesServer(id_new)) break;
+        if (accionesServer(id_new) == SALIR) break;
         
     }
     
