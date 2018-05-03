@@ -25,7 +25,7 @@ int igualesNombre(Cola * cola, int id_new)
 
     }
 
-    if (sonIguales(&colaC, &cola)) return 1;
+    if (sonIguales(&colaC, cola)) return 1;
     return 0;
 
 }

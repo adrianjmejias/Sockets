@@ -38,8 +38,8 @@ int accionesMenu(int id, struct sockaddr_in server)
         //Nombres de archivos
         int cont = (client.nom).tamanio;
         nodo *nodoActual = (client.nom).primero;
-        char nombre[200];
-
+        char nombre[PACKET_SIZE];
+        Leer(&client.nom);
         while(cont > 0)
         {
             strcpy(nombre, nodoActual -> path);
