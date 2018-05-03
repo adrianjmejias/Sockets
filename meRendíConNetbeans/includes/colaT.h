@@ -142,6 +142,30 @@ nodo Desencolar(Cola * cola)
     }
 }
 
+int sonIguales( Cola * colaA,  Cola * colaB)
+{
+    if (colaA -> primero == NULL && colaB -> primero == NULL)
+    {
+        return 1;
+    }
+
+    int cont = colaA -> tamanio;
+
+    nodo * nodoActualA = colaA -> primero;
+    nodo * nodoActualB = colaB -> primero;
+
+    while (cont > 0)
+    {
+        if (strcmp(nodoActualA -> path, nodoActualB -> path)) return 0;
+
+        nodoActualA = nodoActualA -> siguiente;
+        nodoActualB = nodoActualB -> siguiente;
+
+        cont--;
+    }
+
+    return 1;
+}
 
 #endif /* COLAT_H */
 

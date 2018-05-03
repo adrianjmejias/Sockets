@@ -2,11 +2,76 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
+int accionesMenu(int id, struct sockaddr_in server)
+{
+    int recibido;
+    char opcion[2];
+    char bufferRes[200];
+    //Opción del menu
+    printf("ESCOJA UNA OPCION: ");
+    scanf("%s", opcion);
+
+    //Nos conectamos al servidor
+    if(connect(id, (struct sockaddr *)&server, sizeof(struct sockaddr))==-1)
+    {
+         printf("Error en connect()\n");
+         exit(-1);
+    }
+
+    send(id, opcion, 2, 0);
+
+
+    if(strcmp(opcion,"1") == 0)
+    {
+        comp client = recorrerArchivos("client");
+        
+        //Primer filtro
+        
+        //Numero de directorios
+        sprintf(bufferRes, "%d", client.numDir);        
+        send(id, bufferRes, 4, 0);
+        
+        //Numero de archivos
+        sprintf(bufferRes, "%d", client.numArch);        
+        send(id, bufferRes, 4, 0);
+
+        //Nombres de archivos
+        int cont = (client.nom).tamanio;
+        nodo *nodoActual = (client.nom).primero;
+        char nombre[200];
+
+        while(cont > 0)
+        {
+            strcpy(nombre, nodoActual -> path);
+            send(id, nombre, 200, 0);
+
+            nodoActual = nodoActual -> siguiente;
+            cont--;
+            printf("hola\n");
+        }
+    }    
+
+    if(strcmp(opcion,"4") == 0)
+    {
+        printf("Se termina el ciclo.\n"); 
+        return 1;
+    }
+    
+    if ((recibido = recv(id, bufferRes, 200, 0)) == -1)
+    {
+         printf("Error en recv() \n");
+         exit(-1);
+    }
+    
+    printf("\nRespuesta del servidor: %s\n\n", bufferRes);
+    return 0;
+}
+
+
 int main(int argc, char const *argv[])
 {
     //cliente
-    int id,asd; // el identificador retornado se usa en todas las funciones de los sockets
-    char opcion[2], bufferRes[200];
+    int id; // el identificador retornado se usa en todas las funciones de los sockets
     
     if(argv[1] == NULL || argv[2] == NULL)
     {
@@ -44,33 +109,7 @@ int main(int argc, char const *argv[])
         //Creamos el socket
         id = socket(AF_INET, SOCK_STREAM, 0);
 
-        //Opción del menu
-        printf("ESCOJA UNA OPCION: ");
-        scanf("%s", opcion);
-
-        //Nos conectamos al servidor
-        if(connect(id, (struct sockaddr *)&server, sizeof(struct sockaddr))==-1)
-        {
-             printf("Error en connect()\n");
-             exit(-1);
-        }
-
-        //write(id, opcion, 2);
-        send(id, opcion, 2, 0);
-        
-        if(strcmp(opcion,"4") == 0)
-        {
-            printf("Se termina el ciclo.\n"); 
-            break;
-        }
-        
-        if ((asd =recv(id, bufferRes, 200, 0)) == -1)
-        {
-             printf("Error en recv() \n");
-             exit(-1);
-        }
-        
-        printf("\nRespuesta del servidor: %s\n\n", bufferRes);
+        if(accionesMenu(id, server)) break;
         
     }
     
