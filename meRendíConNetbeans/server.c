@@ -20,12 +20,16 @@ int igualesNombre(Cola * cola, int id_new)
             DeathByError("Error en recv() path\n");
         }
 
+<<<<<<< HEAD
         //recibir hash
         if ((recv(id_new, hash, HASH_SIZE, 0) == -1)
         {
             DeathByError("Error en recv() hash\n");
         }
         Insertar(&colaC, nombre, hash);
+=======
+        Insertar(&colaC, nombre, NULL);
+>>>>>>> e13523b169a6ed57c0943a8d1f6cf988fab40de1
         cont--;
     }
 

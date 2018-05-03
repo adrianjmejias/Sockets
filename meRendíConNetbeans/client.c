@@ -39,7 +39,6 @@ int accionesMenu(int id, struct sockaddr_in server)
         int cont = (client.nom).tamanio;
         nodo *nodoActual = (client.nom).primero;
         char nombre[PACKET_SIZE];
-        Leer(&client.nom);
         while(cont > 0)
         {
             strcpy(nombre, nodoActual -> path);
@@ -53,7 +52,6 @@ int accionesMenu(int id, struct sockaddr_in server)
 
             nodoActual = nodoActual -> siguiente;
             cont--;
-            printf("hola\n");
         }
     }    
 
