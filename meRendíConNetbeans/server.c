@@ -22,7 +22,7 @@ int igualesNombre(Cola * cola, int id_new)
         }
 
         Insertar(&colaC, nombre, NULL);
-
+        cont--;
     }
 
     if (sonIguales(&colaC, cola)) return 1;
