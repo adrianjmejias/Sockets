@@ -15,7 +15,7 @@
 #include <dirent.h>
 
 
-#define PACKET_SIZE (1024) * 10 //10 MEGAS
+#define PACKET_SIZE 1024 //1 MEGAS
 #define PATHSIZE PACKET_SIZE
 #define DeathByError(printfParam) printf(printfParam); exit(-1)
 #define COMPROBAR 1
