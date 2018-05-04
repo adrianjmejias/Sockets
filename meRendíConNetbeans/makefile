@@ -1,5 +1,6 @@
 run:
-	gcc -o client client.c libmd5.a
-	gcc -o server server.c libmd5.a
-	./server.exe 3036
-	# ./client 127.0.0.1 3036
+	gcc -o servidor server.c libmd5.a
+	gcc -o cliente client.c libmd5.a
+	./servidor 3035
+client:
+	./client 127.0.0.1 3036

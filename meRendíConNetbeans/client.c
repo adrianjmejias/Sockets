@@ -2,6 +2,65 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
+void sendNPackets(int idsocket, Cola *in)
+{
+    char IO[PACKET_SIZE];
+    sprintf(IO, "%d", in -> tamanio);
+    send(idsocket, IO, strlen(IO),0);
+    recv(idsocket, IO, PACKET_SIZE,0);
+    while(!colaVacia(in))
+    {
+        memset(IO, '\0', PACKET_SIZE);
+        strcpy(IO, Desencolar(in).path);
+        send(idsocket, IO, strlen(IO),0);
+        recv(idsocket, IO, PACKET_SIZE,0);
+
+    }
+}
+
+void mandarNombres(int id, Cola *nombres)
+{
+    int cont = nombres -> tamanio;
+    nodo *nodoActual = nombres -> primero;
+    char nombre[PACKET_SIZE];
+    char confirmar[10];
+
+    while(cont > 0)
+    {
+        
+        strcpy(nombre, nodoActual -> path);
+        if (send(id, nombre, strlen(nombre) + 1, 0) == -1)
+        {
+            printf("Error en send() de nombres de archivo\n");
+        }
+        else
+        {
+            if (recv(id, confirmar, 8, 0) == -1)
+            {
+                printf("errooooooooor\n");
+            }
+            printf("%s\n", nombre);
+        }
+        
+        if ((recv(id, confirmar, 9, 0)) == -1)
+        {
+            DeathByError("Error en recv() confirmar si es igual o distinto\n");
+        }
+        printf("%s\n", confirmar);
+        if (strcmp(confirmar, "Diferente") == 0)
+        {
+            return;
+        }
+
+        /*//mandar hash
+        nodoActual->hash = malloc(sizeof(char) * HASH_SIZE);//64 es el hash size
+        MDFile(nodoActual->path, nodoActual->hash);
+        send(id, nodoActual->hash, strlen(nodoActual->hash), 0);
+        */
+        nodoActual = nodoActual -> siguiente;
+        cont--;
+    }
+}
 
 int accionesMenu(int id, struct sockaddr_in server)
 {
@@ -12,12 +71,6 @@ int accionesMenu(int id, struct sockaddr_in server)
     printf("ESCOJA UNA OPCION: ");
     scanf("%s", opcion);
 
-    //Nos conectamos al servidor
-    if(connect(id, (struct sockaddr *)&server, sizeof(struct sockaddr))==-1)
-    {
-         printf("Error en connect()\n");
-         exit(-1);
-    }
 
     send(id, opcion, 2, 0);
 
@@ -36,26 +89,12 @@ int accionesMenu(int id, struct sockaddr_in server)
         send(id, bufferRes, 4, 0);
 
         //Nombres de archivos
-        int cont = (client.nom).tamanio;
-        nodo *nodoActual = (client.nom).primero;
-        char nombre[PACKET_SIZE];
-        while(cont > 0)
-        {
-            strcpy(nombre, nodoActual -> path);
-            send(id, nombre, strlen(nombre), 0);
-            
-            //mandar hash
-            nodoActual->hash = malloc(sizeof(char) * HASH_SIZE);//64 es el hash size
-            MDFile(nodoActual->path, nodoActual->hash);
-            send(id, nodoActual->hash, strlen(nodoActual->hash), 0);
-
-
-            nodoActual = nodoActual -> siguiente;
-            cont--;
-        }
+        //Leer(&client.nom);
+        
+        mandarNombres(id, &client.nom);
+        
     }    
-
-    if(strcmp(opcion,"4") == 0)
+    else if(strcmp(opcion,"4") == 0)
     {
         printf("Se termina el ciclo.\n"); 
         return 1;
@@ -67,7 +106,7 @@ int accionesMenu(int id, struct sockaddr_in server)
          exit(-1);
     }
     
-    printf("\nRespuesta del servidor: %s\n\n", bufferRes);
+    printf("\nRespuesta del servidor: %s\n", bufferRes);
     return 0;
 }
 
@@ -111,6 +150,13 @@ int main(int argc, char const *argv[])
     while(1)
     {   
         id = socket(AF_INET, SOCK_STREAM, 0);
+
+        //Nos conectamos al servidor
+        if(connect(id, (struct sockaddr *)&server, sizeof(struct sockaddr))==-1)
+        {
+             printf("Error en connect()\n");
+             exit(-1);
+        }
 
         if(accionesMenu(id, server)) break;
         

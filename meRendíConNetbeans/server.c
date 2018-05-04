@@ -2,6 +2,27 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
+Cola *receiveNPackets(int idsocket)
+{
+    char IO[PACKET_SIZE];
+    int tam;
+    Cola *out;
+    Inicializar(out);
+    recv(idsocket, IO, PACKET_SIZE,0);
+    tam = strtoul(IO, NULL, 10);
+    send(idsocket, IO, strlen(IO),0);
+
+    while(tam > 0)
+    {
+        memcpy(IO, "\0", PACKET_SIZE);
+        Insertar(out, IO, NULL);
+        tam--;
+        recv(idsocket, IO, PACKET_SIZE,0);
+        send(idsocket, IO, strlen(IO),0);
+    }
+    return out;
+}
+
 int igualesNombre(Cola * cola, int id_new)
 {
     int recibido;
@@ -18,23 +39,20 @@ int igualesNombre(Cola * cola, int id_new)
         if ((recibido = recv(id_new, nombre, PACKET_SIZE, 0)) == -1)
         {
             DeathByError("Error en recv() path\n");
+        }else{
+            send(id_new, "recibido", 8, 0);
+            //printf(" hoola vale %s\n", nombre);
         }
-
-<<<<<<< HEAD
-        //recibir hash
-        if ((recv(id_new, hash, HASH_SIZE, 0) == -1)
+        if (strcmp(nombre, (Desencolar(cola)).path) != 0) 
         {
-            DeathByError("Error en recv() hash\n");
+            send(id_new, "Diferente", 9, 0);
+            return 0;
         }
-        Insertar(&colaC, nombre, hash);
-=======
-        Insertar(&colaC, nombre, NULL);
->>>>>>> e13523b169a6ed57c0943a8d1f6cf988fab40de1
+        else send(id_new, "Igual", 9, 0);
         cont--;
     }
-
-    if (sonIguales(&colaC, cola)) return 1;
-    return 0;
+    //Leer(cola);
+    return 1;
 
 }
 
@@ -55,7 +73,7 @@ int accionesServer(int id_new)
         return 1;
     }
 
-    printf("\nMensaje del cliente: %s\n\n", opcion);        
+    printf("\nMensaje del cliente: %s\n", opcion);        
     
     if(strcmp(opcion,"1") == 0) 
     {
@@ -84,20 +102,16 @@ int accionesServer(int id_new)
 
         if (numDirClient != server.numDir && numArchClient != server.numArch)
         {
-            printf("No son iguales.\n\n");
+            printf("No son iguales.\n");
         }
 
         //Segundo filtro
 
         else if (!igualesNombre(&server.nom, id_new))
         {
-            printf("No son iguales.\n\n");
+            printf("No son iguales.\n");
         }
 
-        /*else if (!sonIguales(&client.nom, &server.nom))
-        {
-            printf("No son iguales.\n\n");
-        }*/
         //Tercer filtro
         else if (0)
         {
@@ -105,24 +119,25 @@ int accionesServer(int id_new)
         }
         else
         {
-            printf("Las carpetas client y server son iguales!!\n\n");
+            printf("Las carpetas client y server son iguales!!\n");
         }
     }
     else if(strcmp(opcion,"2") == 0) 
     {
-        strcpy(bufferRes,"Esta opción aun no está implementada.\n\n");      
+        strcpy(bufferRes,"Esta opción aun no está implementada.\n");      
     }
     else if(strcmp(opcion,"3") == 0) 
     {
-        strcpy(bufferRes,"Esta opción aun no está implementada.\n\n");
+        strcpy(bufferRes,"Esta opción aun no está implementada.\n");
     }
     else 
     {
-        strcpy(bufferRes, "Esta opción aun no es válida.\n\n");
+        strcpy(bufferRes, "Esta opción aun no es válida.\n");
     }
     
     send(id_new, bufferRes, 200,0);
-    close(id_new);
+    if(close(id_new) == -1) printf("Error close\n");
+
     return 0;
 
 }
@@ -167,11 +182,12 @@ int main(int argc, char const *argv[])
 
         printf("Se obtuvo una conexión desde %s\n", inet_ntoa(client.sin_addr));
         //read(id_new, opcion, 2);
-        if (accionesServer(id_new) == SALIR) break;
+        if (accionesServer(id_new)) break;
         
     }
     
     
-    close(id);
+    if(close(id) == -1)
+        printf("Error cerrando socket de server\n");
     return 0;
 }

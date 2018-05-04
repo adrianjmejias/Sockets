@@ -153,7 +153,7 @@ int sonIguales( Cola * colaA,  Cola * colaB)
 
     Leer(colaA);
 
-    printf("-------------------------------------------");
+    printf("-------------------------------------------\n");
 
     Leer(colaB);
     nodo * nodoActualA = colaA -> primero;
