@@ -25,6 +25,7 @@
 #define ELIMINAR 3
 #define SALIR 4
 #include "colaT.h"
+#define CLEAN_BUFFER(a,len) memset(a, '\0', len)
 
 Cola *receiveNPackets(int idsocket)
 {

@@ -95,7 +95,7 @@ int accionesServer(int id_new)
         }
 
         //Tercer filtro
-        else if (0)
+        else
         {
             int tam;
             /* Comprobar contenido*/
@@ -111,16 +111,22 @@ int accionesServer(int id_new)
                 serverC = segmentFile(pathsote);
 
                 if(!sonIguales(clientC, serverC)){
+                    strcpy(pathsote, "0");
                     printf("las colas no son iguales por contenido");
                     tam = -1; //salgo del loop
                     break;
+                }else{
+                    strcpy(pathsote, "1");
                 }
+                send(id_new, pathsote, strlen(pathsote), 0);
+                recv(id_new, pathsote, PACKET_SIZE, 0);
+                if(!strcmp(pathsote, "0")) break;
             }
         }
-        else
-        {
-            printf("Las carpetas client y server son iguales!!\n");
-        }
+        // else
+        // {
+        //     printf("Las carpetas client y server son iguales!!\n");
+        // }
     }
     else if(strcmp(opcion,"2") == 0) 
     {

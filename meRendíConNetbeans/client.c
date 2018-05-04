@@ -78,15 +78,22 @@ int accionesMenu(int id, struct sockaddr_in server)
         sprintf(bufferRes, "%d", client.nom.tamanio);
         send(id, bufferRes, strlen(bufferRes), 0);// de verdad
         recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
-
+        
         while(!colaVacia(&client.nom)){
+            int result = 1;
             char pathsote[PACKET_SIZE];
+            CLEAN_BUFFER(pathsote, PACKET_SIZE);
             strcpy(pathsote, "client/");
             strcat(pathsote, Desencolar(&client.nom).path);
-            Cola *serverC = segmentFile(pathsote);
+            printf("%s\n", pathsote);
             sendNPackets(id, segmentFile(pathsote));
-
-            
+            CLEAN_BUFFER(pathsote, PACKET_SIZE);
+            recv(id, pathsote, PACKET_SIZE, 0);
+            send(id, pathsote, strlen(pathsote), 0);
+            if(result = (strtoul(pathsote, NULL, 10)) == 0) {
+                printf("No Son Iguales por contenido");
+                break;
+            }
         }
     }    
     else if(strcmp(opcion,"4") == 0)
