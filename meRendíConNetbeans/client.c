@@ -33,7 +33,7 @@ void mandarNombres(int id, Cola *nombres)
         {
             DeathByError("Error en recv() confirmar si es igual o distinto\n");
         }
-        printf("%s\n", confirmar);
+        //printf("%s\n", confirmar);
         if (strcmp(confirmar, "Diferente") == 0)
         {
             return;
@@ -78,23 +78,29 @@ int accionesMenu(int id, struct sockaddr_in server)
         sprintf(bufferRes, "%d", client.nom.tamanio);
         send(id, bufferRes, strlen(bufferRes), 0);// de verdad
         recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
-        
-        while(!colaVacia(&client.nom)){
-            int result = 1;
+        int result = 1;
+        while(result && !colaVacia(&client.nom)){
+            
             char pathsote[PACKET_SIZE];
+
             CLEAN_BUFFER(pathsote, PACKET_SIZE);
-            strcpy(pathsote, "client/");
+
+            strcpy(pathsote, "client");
             strcat(pathsote, Desencolar(&client.nom).path);
-            printf("%s\n", pathsote);
             sendNPackets(id, segmentFile(pathsote));
+
             CLEAN_BUFFER(pathsote, PACKET_SIZE);
+
             recv(id, pathsote, PACKET_SIZE, 0);
             send(id, pathsote, strlen(pathsote), 0);
-            if(result = (strtoul(pathsote, NULL, 10)) == 0) {
-                printf("No Son Iguales por contenido");
-                break;
-            }
+
+            result = strtoul(pathsote, NULL, 10);
+
+            
         }
+        char *re = (result)? "si": "no"; 
+        printf("las colas %s son iguales", re);
+        
     }    
     else if(strcmp(opcion,"4") == 0)
     {
@@ -102,11 +108,11 @@ int accionesMenu(int id, struct sockaddr_in server)
         return 1;
     }
     
-    if ((recibido = recv(id, bufferRes, PACKET_SIZE, 0)) == -1)
-    {
-         printf("Error en recv() \n");
-         exit(-1);
-    }
+    // if ((recibido = recv(id, bufferRes, PACKET_SIZE, 0)) == -1)
+    // {
+    //      printf("Error en recv()asd \n");
+    //      exit(-1);
+    // }
     
     printf("\nRespuesta del servidor: %s\n", bufferRes);
     return 0;

@@ -4,7 +4,10 @@
 #include "./colaT.h"
 #include "./todos_los_includes.h"
 
+    //done and tested
     Cola* segmentFile(char *path){
+        //printf("entrando segmentFile\n");
+        
          FILE *file;
         
         if((file = fopen(path, "r")) == NULL)
@@ -19,10 +22,10 @@
             char *buffer;
             char in;
             int numBytes = 0, segmentosActuales = 1;
-            printf("leyendo archivo\n");
+            //printf("leyendo archivo\n");
             while(1){
                 int index = numBytes % PACKET_SIZE; 
-                printf("index = %d\n", index);
+               // printf("index = %d\n", index);
                 in = fgetc(file);
                 if(in == EOF){
                     //Si termina el archivo pero hay cosas en el buffer lo encolo poniendole un \0 para saber cuando termina
@@ -38,7 +41,7 @@
                 
                 //esto es lo "unico" importante, el resto lo que hace es evitar que todo explote
                 buffer[index] = in;
-                
+                //printf("%d = %c\n", index,in);
 
                 numBytes++;
                 int nextIndex = (numBytes) % PACKET_SIZE;
@@ -48,6 +51,7 @@
                 }
                 
             }
+            //printf("saliendo segmentFile\n");
             fclose(file);
             return out;
               

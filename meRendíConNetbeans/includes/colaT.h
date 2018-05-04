@@ -150,16 +150,10 @@ int sonIguales( Cola * colaA,  Cola * colaB)
     }
 
     int cont = colaA -> tamanio;
-
-    Leer(colaA);
-
-    printf("-------------------------------------------\n");
-
-    Leer(colaB);
     nodo * nodoActualA = colaA -> primero;
     nodo * nodoActualB = colaB -> primero;
 
-    while (cont > 0)
+    while (cont--)
     {
         if (strcmp(nodoActualA -> path, nodoActualB -> path)) return 0;
         char hashB[HASH_SIZE];
@@ -167,8 +161,6 @@ int sonIguales( Cola * colaA,  Cola * colaB)
         //if(strcmp(nodoActualA->hash, hashB)) return 0;
         nodoActualA = nodoActualA -> siguiente;
         nodoActualB = nodoActualB -> siguiente;
-
-        cont--;
     }
 
     return 1;

@@ -27,43 +27,52 @@
 #include "colaT.h"
 #define CLEAN_BUFFER(a,len) memset(a, '\0', len)
 
+//Done and tested
 Cola *receiveNPackets(int idsocket)
 {
+   // printf("entrando receiveNPackets \n");
+    
     char IO[PACKET_SIZE];
     int tam;
-    Cola *out;
+    Cola *out = malloc(sizeof(Cola));
     Inicializar(out);
-    recv(idsocket, IO, PACKET_SIZE,0);//recibir de verdad
+    recv(idsocket, IO, PACKET_SIZE, 0);//recibir de verdad
     tam = strtoul(IO, NULL, 10);
     send(idsocket, IO, strlen(IO),0);//enviar inutil
 
-    while(tam > 0)
+    while(tam--)
     {
-        memcpy(IO, "\0", PACKET_SIZE);
+        CLEAN_BUFFER(IO, PACKET_SIZE);
         recv(idsocket, IO, PACKET_SIZE,0);//recibir de verdad 
-
-        Insertar(out, IO, NULL);
+        char *aux = malloc(sizeof(char) * strlen(IO));
+        strcpy(aux,IO);
+        Insertar(out, aux, NULL);
 
         send(idsocket, IO, strlen(IO),0); //enviar inutil
-        tam--;
     }
+    //printf("saliendo receiveNPackets \n");
+    
     return out;
 }
 
+//done and tested
 void sendNPackets(int idsocket, Cola *in)
 {
+    //printf("entrando sendNPackets \n");
     char IO[PACKET_SIZE];
     sprintf(IO, "%d", in -> tamanio);
     send(idsocket, IO, strlen(IO),0);//enviar de verdad 
     recv(idsocket, IO, PACKET_SIZE,0);//recibir inutil
     while(!colaVacia(in))
     {
-        memset(IO, '\0', PACKET_SIZE);
+        CLEAN_BUFFER(IO, PACKET_SIZE);
         strcpy(IO, Desencolar(in).path);
         send(idsocket, IO, strlen(IO),0);//enviar de verdad
         recv(idsocket, IO, PACKET_SIZE,0);//recibir inutil
 
     }
+  //  printf("saliendo sendNPackets \n");
+    
 }
 
 #endif

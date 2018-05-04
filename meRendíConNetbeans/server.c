@@ -68,7 +68,7 @@ int accionesServer(int id_new)
         //Primer filtro
         if ((recibido = recv(id_new, bufferRes, 4, 0)) == -1)
         {
-            printf("Error en recv() \n");
+            printf("Error en recv() 1\n");
             exit(-1);
         }
 
@@ -104,18 +104,24 @@ int accionesServer(int id_new)
             send(id_new, bufferRes, strlen(bufferRes), 0);//de mentira
             while(tam--){
 
-                Cola *serverC, *clientC= receiveNPackets(id_new);
+                Cola *serverC, *clientC = receiveNPackets(id_new);
+                printf("******************\n");                
+                printf("cola client \n");
+                Leer(clientC);
                 char pathsote[PACKET_SIZE];
-                strcpy(pathsote, "server/");
+                strcpy(pathsote, "server");
                 strcat(pathsote, Desencolar(&server.nom).path);
+                printf("pathsote %s--------------------------\n", pathsote);
                 serverC = segmentFile(pathsote);
-
+                printf("cola mia\n");
+                Leer(serverC);
+                printf("******************\n");
                 if(!sonIguales(clientC, serverC)){
                     strcpy(pathsote, "0");
-                    printf("las colas no son iguales por contenido");
+                    printf("las colas no son iguales por contenido\n");
                     tam = -1; //salgo del loop
-                    break;
                 }else{
+                    printf("las colas son iguales!!\n");
                     strcpy(pathsote, "1");
                 }
                 send(id_new, pathsote, strlen(pathsote), 0);
