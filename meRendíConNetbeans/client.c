@@ -2,21 +2,7 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
-void sendNPackets(int idsocket, Cola *in)
-{
-    char IO[PACKET_SIZE];
-    sprintf(IO, "%d", in -> tamanio);
-    send(idsocket, IO, strlen(IO),0);
-    recv(idsocket, IO, PACKET_SIZE,0);
-    while(!colaVacia(in))
-    {
-        memset(IO, '\0', PACKET_SIZE);
-        strcpy(IO, Desencolar(in).path);
-        send(idsocket, IO, strlen(IO),0);
-        recv(idsocket, IO, PACKET_SIZE,0);
 
-    }
-}
 
 void mandarNombres(int id, Cola *nombres)
 {

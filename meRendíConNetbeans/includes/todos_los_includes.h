@@ -26,4 +26,43 @@ int MDFile(char* filename, char hashValue[HASH_SIZE]);
 #define ELIMINAR 3
 #define SALIR 4
 
+Cola *receiveNPackets(int idsocket)
+{
+    char IO[PACKET_SIZE];
+    int tam;
+    Cola *out;
+    Inicializar(out);
+    recv(idsocket, IO, PACKET_SIZE,0);//recibir
+    tam = strtoul(IO, NULL, 10);
+    send(idsocket, IO, strlen(IO),0);//enviar
+
+    while(tam > 0)
+    {
+        memcpy(IO, "\0", PACKET_SIZE);
+        recv(idsocket, IO, PACKET_SIZE,0);//recibir buffer
+
+        Insertar(out, IO, NULL);
+
+        send(idsocket, IO, strlen(IO),0); //enviar
+        tam--;
+    }
+    return out;
+}
+
+void sendNPackets(int idsocket, Cola *in)
+{
+    char IO[PACKET_SIZE];
+    sprintf(IO, "%d", in -> tamanio);
+    send(idsocket, IO, strlen(IO),0);//enviar
+    recv(idsocket, IO, PACKET_SIZE,0);//recibir
+    while(!colaVacia(in))
+    {
+        memset(IO, '\0', PACKET_SIZE);
+        strcpy(IO, Desencolar(in).path);
+        send(idsocket, IO, strlen(IO),0);//enviar
+        recv(idsocket, IO, PACKET_SIZE,0);//recibir
+
+    }
+}
+
 #endif

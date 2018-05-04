@@ -2,26 +2,7 @@
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
 
-Cola *receiveNPackets(int idsocket)
-{
-    char IO[PACKET_SIZE];
-    int tam;
-    Cola *out;
-    Inicializar(out);
-    recv(idsocket, IO, PACKET_SIZE,0);
-    tam = strtoul(IO, NULL, 10);
-    send(idsocket, IO, strlen(IO),0);
 
-    while(tam > 0)
-    {
-        memcpy(IO, "\0", PACKET_SIZE);
-        Insertar(out, IO, NULL);
-        tam--;
-        recv(idsocket, IO, PACKET_SIZE,0);
-        send(idsocket, IO, strlen(IO),0);
-    }
-    return out;
-}
 
 int igualesNombre(Cola * cola, int id_new)
 {
