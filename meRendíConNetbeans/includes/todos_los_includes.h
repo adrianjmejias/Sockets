@@ -1,6 +1,5 @@
 #ifndef TODOS_LOS_INCLUDES
 #define TODOS_LOS_INCLUDES
-
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
@@ -16,7 +15,7 @@
 
 /*funcion del hash modo libreria*/
 #define HASH_SIZE 33
-int MDFile(char* filename, char hashValue[HASH_SIZE]);
+//int MDFile(char* filename, char hashValue[HASH_SIZE]);
 
 #define PACKET_SIZE 1024 //1 MEGAS
 #define PATHSIZE PACKET_SIZE // debería tener un _ pero 
@@ -25,6 +24,7 @@ int MDFile(char* filename, char hashValue[HASH_SIZE]);
 #define AGREGAR 2
 #define ELIMINAR 3
 #define SALIR 4
+#include "colaT.h"
 
 Cola *receiveNPackets(int idsocket)
 {
@@ -32,18 +32,18 @@ Cola *receiveNPackets(int idsocket)
     int tam;
     Cola *out;
     Inicializar(out);
-    recv(idsocket, IO, PACKET_SIZE,0);//recibir
+    recv(idsocket, IO, PACKET_SIZE,0);//recibir de verdad
     tam = strtoul(IO, NULL, 10);
-    send(idsocket, IO, strlen(IO),0);//enviar
+    send(idsocket, IO, strlen(IO),0);//enviar inutil
 
     while(tam > 0)
     {
         memcpy(IO, "\0", PACKET_SIZE);
-        recv(idsocket, IO, PACKET_SIZE,0);//recibir buffer
+        recv(idsocket, IO, PACKET_SIZE,0);//recibir de verdad 
 
         Insertar(out, IO, NULL);
 
-        send(idsocket, IO, strlen(IO),0); //enviar
+        send(idsocket, IO, strlen(IO),0); //enviar inutil
         tam--;
     }
     return out;
@@ -53,14 +53,14 @@ void sendNPackets(int idsocket, Cola *in)
 {
     char IO[PACKET_SIZE];
     sprintf(IO, "%d", in -> tamanio);
-    send(idsocket, IO, strlen(IO),0);//enviar
-    recv(idsocket, IO, PACKET_SIZE,0);//recibir
+    send(idsocket, IO, strlen(IO),0);//enviar de verdad 
+    recv(idsocket, IO, PACKET_SIZE,0);//recibir inutil
     while(!colaVacia(in))
     {
         memset(IO, '\0', PACKET_SIZE);
         strcpy(IO, Desencolar(in).path);
-        send(idsocket, IO, strlen(IO),0);//enviar
-        recv(idsocket, IO, PACKET_SIZE,0);//recibir
+        send(idsocket, IO, strlen(IO),0);//enviar de verdad
+        recv(idsocket, IO, PACKET_SIZE,0);//recibir inutil
 
     }
 }

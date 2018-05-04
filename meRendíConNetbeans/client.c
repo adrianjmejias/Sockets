@@ -1,6 +1,7 @@
 #include "includes/todos_los_includes.h"
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
+#include "includes/segmentFile.h"
 
 
 
@@ -38,11 +39,6 @@ void mandarNombres(int id, Cola *nombres)
             return;
         }
 
-        /*//mandar hash
-        nodoActual->hash = malloc(sizeof(char) * HASH_SIZE);//64 es el hash size
-        MDFile(nodoActual->path, nodoActual->hash);
-        send(id, nodoActual->hash, strlen(nodoActual->hash), 0);
-        */
         nodoActual = nodoActual -> siguiente;
         cont--;
     }
@@ -77,8 +73,21 @@ int accionesMenu(int id, struct sockaddr_in server)
         //Nombres de archivos
         //Leer(&client.nom);
         
-        mandarNombres(id, &client.nom);
-        
+        mandarNombres(id, CopiarCola(&client.nom));
+
+        sprintf(bufferRes, "%d", client.nom.tamanio);
+        send(id, bufferRes, strlen(bufferRes), 0);// de verdad
+        recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
+
+        while(!colaVacia(&client.nom)){
+            char pathsote[PACKET_SIZE];
+            strcpy(pathsote, "client/");
+            strcat(pathsote, Desencolar(&client.nom).path);
+            Cola *serverC = segmentFile(pathsote);
+            sendNPackets(id, segmentFile(pathsote));
+
+            
+        }
     }    
     else if(strcmp(opcion,"4") == 0)
     {

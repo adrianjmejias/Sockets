@@ -9,6 +9,7 @@
         
         if((file = fopen(path, "r")) == NULL)
         {
+            printf("%s\n", path);
             DeathByError("Error al abrir archivo");
         }else
         {

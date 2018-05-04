@@ -1,6 +1,7 @@
 #include "includes/todos_los_includes.h"
 #include "includes/colaT.h"
 #include "includes/recorrerArchivos.h"
+#include "includes/segmentFile.h"
 
 
 
@@ -36,7 +37,7 @@ int igualesNombre(Cola * cola, int id_new)
     return 1;
 
 }
-
+#define CARPETA "server"
 int accionesServer(int id_new)
 {
     int recibido; // el identificador retornado se usa en todas las funciones de los sockets
@@ -61,7 +62,7 @@ int accionesServer(int id_new)
         
         //comp client = recorrerArchivos("client");
         //Leer(&client.nom);
-        comp server = recorrerArchivos("server");
+        comp server = recorrerArchivos(CARPETA);
         //Leer(&server.nom);
 
         //Primer filtro
@@ -88,7 +89,7 @@ int accionesServer(int id_new)
 
         //Segundo filtro
 
-        else if (!igualesNombre(&server.nom, id_new))
+        else if (!igualesNombre(CopiarCola(&server.nom), id_new))
         {
             printf("No son iguales.\n");
         }
@@ -96,7 +97,25 @@ int accionesServer(int id_new)
         //Tercer filtro
         else if (0)
         {
+            int tam;
             /* Comprobar contenido*/
+            recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
+            tam = strtoul(bufferRes, NULL, 10);
+            send(id_new, bufferRes, strlen(bufferRes), 0);//de mentira
+            while(tam--){
+
+                Cola *serverC, *clientC= receiveNPackets(id_new);
+                char pathsote[PACKET_SIZE];
+                strcpy(pathsote, "server/");
+                strcat(pathsote, Desencolar(&server.nom).path);
+                serverC = segmentFile(pathsote);
+
+                if(!sonIguales(clientC, serverC)){
+                    printf("las colas no son iguales por contenido");
+                    tam = -1; //salgo del loop
+                    break;
+                }
+            }
         }
         else
         {

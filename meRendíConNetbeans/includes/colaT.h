@@ -163,8 +163,8 @@ int sonIguales( Cola * colaA,  Cola * colaB)
     {
         if (strcmp(nodoActualA -> path, nodoActualB -> path)) return 0;
         char hashB[HASH_SIZE];
-        MDFile(nodoActualB->path, hashB);
-        if(strcmp(nodoActualA->hash, hashB)) return 0;
+        //MDFile(nodoActualB->path, hashB);
+        //if(strcmp(nodoActualA->hash, hashB)) return 0;
         nodoActualA = nodoActualA -> siguiente;
         nodoActualB = nodoActualB -> siguiente;
 
@@ -172,6 +172,19 @@ int sonIguales( Cola * colaA,  Cola * colaB)
     }
 
     return 1;
+}
+
+Cola* CopiarCola(Cola* in){
+    int tam = in->tamanio;
+    Cola *out = malloc(sizeof(Cola));
+    Inicializar(out);
+    nodo *aux = in->primero;
+
+    while(tam--){
+        Insertar(out, aux->path, NULL);
+        aux = aux->siguiente;
+    }
+    return out;
 }
 
 #endif /* COLAT_H */
