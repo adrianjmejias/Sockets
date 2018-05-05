@@ -94,9 +94,7 @@ int accionesMenu(int id, struct sockaddr_in server)
             recv(id, pathsote, PACKET_SIZE, 0);
             send(id, pathsote, strlen(pathsote), 0);
 
-            result = strtoul(pathsote, NULL, 10);
-
-            
+            result = strtoul(pathsote, NULL, 10);  
         }
         char *re = (result)? "si": "no"; 
         printf("las colas %s son iguales", re);

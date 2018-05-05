@@ -10,7 +10,7 @@
         
          FILE *file;
         
-        if((file = fopen(path, "r")) == NULL)
+        if((file = fopen(path, "rb")) == NULL)
         {
             printf("%s\n", path);
             DeathByError("Error al abrir archivo");
