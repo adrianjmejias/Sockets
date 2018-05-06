@@ -3,7 +3,10 @@
 #include "includes/recorrerArchivos.h"
 #include "includes/segmentFile.h"
 
-
+/*
+61bb7583602fafd989a3fa05b96755b.jpg
+*/
+#define CARPETA "server"
 
 int igualesNombre(Cola * cola, int id_new)
 {
@@ -37,11 +40,106 @@ int igualesNombre(Cola * cola, int id_new)
     return 1;
 
 }
-#define CARPETA "server"
+
+void opcion1(int id_new)
+{
+    char bufferRes[PACKET_SIZE];
+    //comp client = recorrerArchivos("client");
+    //Leer(&client.nom);
+    comp server = recorrerArchivos(CARPETA);
+    //Leer(&server.nom);
+
+    //Primer filtro
+    if ((recv(id_new, bufferRes, 4, 0)) == -1)
+    {
+        printf("Error en recv() 1\n");
+        exit(-1);
+    }
+
+    int numDirClient = strtoul(bufferRes, NULL, 10);
+    
+    if ((recv(id_new, bufferRes, 4, 0)) == -1)
+    {
+        printf("Error en recv() \n");
+        exit(-1);
+    }
+    
+    int numArchClient = strtoul(bufferRes, NULL, 10);
+
+    if (numDirClient != server.numDir && numArchClient != server.numArch)
+    {
+        printf("No son iguales.\n");
+    }
+
+    //Segundo filtro
+
+    else if (!igualesNombre(CopiarCola(&server.nom), id_new))
+    {
+        printf("No son iguales.\n");
+    }
+
+    //Tercer filtro
+    else
+    {
+        printf("holaaaaaa\n");
+        int tam;
+        // Comprobar contenido
+        recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
+        tam = strtoul(bufferRes, NULL, 10);
+        send(id_new, bufferRes, strlen(bufferRes), 0);//de mentira
+        while(tam--)
+        {
+            Cola *serverC, *clientC = receiveNPackets(id_new);
+            printf("******************\n");                
+            printf("cola client \n");
+            Leer(clientC);
+            char pathsote[PACKET_SIZE];
+            strcpy(pathsote, "server");
+            strcat(pathsote, Desencolar(&server.nom).path);
+            printf("pathsote %s--------------------------\n", pathsote);
+            serverC = segmentFile(pathsote);
+            printf("cola mia\n");
+            Leer(serverC);
+            printf("******************\n");
+            if(!sonIguales(clientC, serverC))
+            {
+                strcpy(pathsote, "0");
+                printf("las colas no son iguales por contenido\n");
+                tam = -1; //salgo del loop
+            }else
+            {
+                printf("las colas son iguales!!\n");
+                strcpy(pathsote, "1");
+            }
+            send(id_new, pathsote, strlen(pathsote), 0);
+            if(recv(id_new, pathsote, PACKET_SIZE, 0) == -1) printf("Error.\n");;
+            if(!strcmp(pathsote, "0")) break;
+        }
+    }
+}
+
+void opcion3(int id_new)
+{
+    char fileName[PACKET_SIZE];
+    char pathCompleto[PACKET_SIZE];
+
+    if (recv(id_new, fileName, PACKET_SIZE, 0) == -1)
+    {
+        printf("Error en recv() \n");
+        exit(-1);
+    }
+    sprintf(pathCompleto, "server/%s", fileName);
+    printf("%s\n", pathCompleto);
+    if (remove(pathCompleto) == 0)
+    {
+        printf("El achivo %s fue borrado\n", pathCompleto);
+    }else printf("El archivo no existe\n");
+}
+
 int accionesServer(int id_new)
 {
     int recibido; // el identificador retornado se usa en todas las funciones de los sockets
-    char opcion[2], bufferRes[PACKET_SIZE];
+    char opcion[2];
 
     if ((recibido = recv(id_new, opcion, 2, 0)) == -1)
     {
@@ -59,95 +157,22 @@ int accionesServer(int id_new)
     
     if(strcmp(opcion,"1") == 0) 
     {
-        
-        //comp client = recorrerArchivos("client");
-        //Leer(&client.nom);
-        comp server = recorrerArchivos(CARPETA);
-        //Leer(&server.nom);
-
-        //Primer filtro
-        if ((recibido = recv(id_new, bufferRes, 4, 0)) == -1)
-        {
-            printf("Error en recv() 1\n");
-            exit(-1);
-        }
-
-        int numDirClient = strtoul(bufferRes, NULL, 10);
-        
-        if ((recibido = recv(id_new, bufferRes, 4, 0)) == -1)
-        {
-            printf("Error en recv() \n");
-            exit(-1);
-        }
-        
-        int numArchClient = strtoul(bufferRes, NULL, 10);
-
-        if (numDirClient != server.numDir && numArchClient != server.numArch)
-        {
-            printf("No son iguales.\n");
-        }
-
-        //Segundo filtro
-
-        else if (!igualesNombre(CopiarCola(&server.nom), id_new))
-        {
-            printf("No son iguales.\n");
-        }
-
-        //Tercer filtro
-        else
-        {
-            int tam;
-            /* Comprobar contenido*/
-            recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
-            tam = strtoul(bufferRes, NULL, 10);
-            send(id_new, bufferRes, strlen(bufferRes), 0);//de mentira
-            while(tam--){
-
-                Cola *serverC, *clientC = receiveNPackets(id_new);
-                printf("******************\n");                
-                printf("cola client \n");
-                Leer(clientC);
-                char pathsote[PACKET_SIZE];
-                strcpy(pathsote, "server");
-                strcat(pathsote, Desencolar(&server.nom).path);
-                printf("pathsote %s--------------------------\n", pathsote);
-                serverC = segmentFile(pathsote);
-                printf("cola mia\n");
-                Leer(serverC);
-                printf("******************\n");
-                if(!sonIguales(clientC, serverC)){
-                    strcpy(pathsote, "0");
-                    printf("las colas no son iguales por contenido\n");
-                    tam = -1; //salgo del loop
-                }else{
-                    printf("las colas son iguales!!\n");
-                    strcpy(pathsote, "1");
-                }
-                send(id_new, pathsote, strlen(pathsote), 0);
-                recv(id_new, pathsote, PACKET_SIZE, 0);
-                if(!strcmp(pathsote, "0")) break;
-            }
-        }
-        // else
-        // {
-        //     printf("Las carpetas client y server son iguales!!\n");
-        // }
+        opcion1(id_new);
     }
     else if(strcmp(opcion,"2") == 0) 
     {
-        strcpy(bufferRes,"Esta opción aun no está implementada.\n");      
+        //strcpy(bufferRes,"Esta opción aun no está implementada.\n");      
     }
     else if(strcmp(opcion,"3") == 0) 
     {
-        strcpy(bufferRes,"Esta opción aun no está implementada.\n");
+        opcion3(id_new);
     }
     else 
     {
-        strcpy(bufferRes, "Esta opción aun no es válida.\n");
+        //strcpy(bufferRes, "Esta opción aun no es válida.\n");
     }
     
-    send(id_new, bufferRes, 200,0);
+    //send(id_new, bufferRes, 200,0);
     if(close(id_new) == -1) printf("Error close\n");
 
     return 0;

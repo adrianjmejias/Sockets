@@ -4,7 +4,6 @@
 #include "includes/segmentFile.h"
 
 
-
 void mandarNombres(int id, Cola *nombres)
 {
     int cont = nombres -> tamanio;
@@ -44,11 +43,71 @@ void mandarNombres(int id, Cola *nombres)
     }
 }
 
+void opcion1(int id)
+{
+    char bufferRes[PACKET_SIZE];
+    comp client = recorrerArchivos("client");
+    //Primer filtro
+    
+    //Numero de directorios
+    sprintf(bufferRes, "%d", client.numDir);        
+    send(id, bufferRes, 4, 0);
+    
+    //Numero de archivos
+    sprintf(bufferRes, "%d", client.numArch);        
+    send(id, bufferRes, 4, 0);
+
+    //Nombres de archivos
+    //Leer(&client.nom);
+    
+    mandarNombres(id, CopiarCola(&client.nom));
+
+    sprintf(bufferRes, "%d", client.nom.tamanio);
+    send(id, bufferRes, strlen(bufferRes), 0);// de verdad
+    recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
+    int result = 1;
+    while(result && !colaVacia(&client.nom))
+    {    
+        char pathsote[PACKET_SIZE];
+
+        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+
+        strcpy(pathsote, "client");
+        strcat(pathsote, Desencolar(&client.nom).path);
+        sendNPackets(id, segmentFile(pathsote));
+
+        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+
+        recv(id, pathsote, PACKET_SIZE, 0);
+        send(id, pathsote, strlen(pathsote), 0);
+
+        result = strtoul(pathsote, NULL, 10);  
+    }
+    char *re = (result)? "si": "no"; 
+    printf("las colas %s son iguales", re);
+}
+
+void opcion3(int id)
+{
+    char fileName[PACKET_SIZE];
+    char pathCompleto[PACKET_SIZE];
+
+    printf("INGRESE EL NOMBRE DEL ARCHIVO A ELIMINAR");
+    scanf("%s", fileName);
+    
+    send(id, fileName, PACKET_SIZE, 0);
+    sprintf(pathCompleto, "client/%s", fileName);
+
+    if (remove(pathCompleto) == 0)
+    {
+        printf("SE HA ELIMINADO %s\n", fileName);
+    }else printf("NO SE ENCUENTRA EL ARCHIVO.\n");
+}
+
 int accionesMenu(int id, struct sockaddr_in server)
 {
     int recibido;
     char opcion[2];
-    char bufferRes[PACKET_SIZE];
     //Opción del menu
     printf("ESCOJA UNA OPCION: ");
     scanf("%s", opcion);
@@ -59,46 +118,12 @@ int accionesMenu(int id, struct sockaddr_in server)
 
     if(strcmp(opcion,"1") == 0)
     {
-        comp client = recorrerArchivos("client");
-        //Primer filtro
+        opcion1(id);
         
-        //Numero de directorios
-        sprintf(bufferRes, "%d", client.numDir);        
-        send(id, bufferRes, 4, 0);
-        
-        //Numero de archivos
-        sprintf(bufferRes, "%d", client.numArch);        
-        send(id, bufferRes, 4, 0);
-
-        //Nombres de archivos
-        //Leer(&client.nom);
-        
-        mandarNombres(id, CopiarCola(&client.nom));
-
-        sprintf(bufferRes, "%d", client.nom.tamanio);
-        send(id, bufferRes, strlen(bufferRes), 0);// de verdad
-        recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
-        int result = 1;
-        while(result && !colaVacia(&client.nom)){
-            
-            char pathsote[PACKET_SIZE];
-
-            CLEAN_BUFFER(pathsote, PACKET_SIZE);
-
-            strcpy(pathsote, "client");
-            strcat(pathsote, Desencolar(&client.nom).path);
-            sendNPackets(id, segmentFile(pathsote));
-
-            CLEAN_BUFFER(pathsote, PACKET_SIZE);
-
-            recv(id, pathsote, PACKET_SIZE, 0);
-            send(id, pathsote, strlen(pathsote), 0);
-
-            result = strtoul(pathsote, NULL, 10);  
-        }
-        char *re = (result)? "si": "no"; 
-        printf("las colas %s son iguales", re);
-        
+    }
+    if (strcmp(opcion,"3") == 0)
+    {
+        opcion3(id);
     }    
     else if(strcmp(opcion,"4") == 0)
     {
@@ -112,7 +137,7 @@ int accionesMenu(int id, struct sockaddr_in server)
     //      exit(-1);
     // }
     
-    printf("\nRespuesta del servidor: %s\n", bufferRes);
+    //printf("\nRespuesta del servidor: %s\n", bufferRes);
     return 0;
 }
 
