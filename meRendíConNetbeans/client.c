@@ -11,7 +11,7 @@ int mandarNombres(int id, Cola *nombres)
     nodo *nodoActual = nombres -> primero;
     char nombre[PACKET_SIZE];
     char confirmar[10];
-    Leer(&nombres);
+    Leer(nombres);
     printf("hola\n");
     while(cont > 0)
     {
@@ -66,31 +66,33 @@ void opcion1(int id)
     {
         printf("no son iguales\n");
     }
+    else
+    {
+        sprintf(bufferRes, "%d", client.nom.tamanio);
+        send(id, bufferRes, strlen(bufferRes), 0);// de verdad
+        recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
+        int result = 1;
+        while(result && !colaVacia(&client.nom))
+        {    
+            char pathsote[PACKET_SIZE];
 
-    /*
-    sprintf(bufferRes, "%d", client.nom.tamanio);
-    send(id, bufferRes, strlen(bufferRes), 0);// de verdad
-    recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
-    int result = 1;
-    while(result && !colaVacia(&client.nom))
-    {    
-        char pathsote[PACKET_SIZE];
+            CLEAN_BUFFER(pathsote, PACKET_SIZE);
 
-        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+            strcpy(pathsote, "client");
+            strcat(pathsote, Desencolar(&client.nom).path);
+            sendNPackets(id, segmentFile(pathsote));
 
-        strcpy(pathsote, "client");
-        strcat(pathsote, Desencolar(&client.nom).path);
-        sendNPackets(id, segmentFile(pathsote));
+            CLEAN_BUFFER(pathsote, PACKET_SIZE);
 
-        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+            recv(id, pathsote, PACKET_SIZE, 0);
+            send(id, pathsote, strlen(pathsote), 0);
 
-        recv(id, pathsote, PACKET_SIZE, 0);
-        send(id, pathsote, strlen(pathsote), 0);
-
-        result = strtoul(pathsote, NULL, 10);  
+            result = strtoul(pathsote, NULL, 10);  
+        }
+        char *re = (result)? "si": "no"; 
+        printf("las colas %s son iguales", re);
     }
-    char *re = (result)? "si": "no"; 
-    printf("las colas %s son iguales", re);*/
+    
 }
 
 void opcion3(int id)
