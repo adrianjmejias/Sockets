@@ -77,7 +77,7 @@ void opcion1(int id_new)
     {
         printf("No son iguales.\n");
     }
-
+    /*
     //Tercer filtro
     else
     {
@@ -115,7 +115,7 @@ void opcion1(int id_new)
             if(recv(id_new, pathsote, PACKET_SIZE, 0) == -1) printf("Error.\n");;
             if(!strcmp(pathsote, "0")) break;
         }
-    }
+    }*/
 }
 
 void opcion3(int id_new)

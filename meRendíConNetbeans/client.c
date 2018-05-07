@@ -4,18 +4,20 @@
 #include "includes/segmentFile.h"
 
 
-void mandarNombres(int id, Cola *nombres)
+int mandarNombres(int id, Cola *nombres)
 {
+    printf("hola\n");
     int cont = nombres -> tamanio;
     nodo *nodoActual = nombres -> primero;
     char nombre[PACKET_SIZE];
     char confirmar[10];
-
+    Leer(&nombres);
+    printf("hola\n");
     while(cont > 0)
     {
         
         strcpy(nombre, nodoActual -> path);
-        if (send(id, nombre, strlen(nombre) + 1, 0) == -1)
+        if (send(id, nombre, strlen(nombre), 0) == -1)
         {
             printf("Error en send() de nombres de archivo\n");
         }
@@ -35,8 +37,8 @@ void mandarNombres(int id, Cola *nombres)
         //printf("%s\n", confirmar);
         if (strcmp(confirmar, "Diferente") == 0)
         {
-            return;
-        }
+            return 0;
+        } else return 1;
 
         nodoActual = nodoActual -> siguiente;
         cont--;
@@ -60,8 +62,12 @@ void opcion1(int id)
     //Nombres de archivos
     //Leer(&client.nom);
     
-    mandarNombres(id, CopiarCola(&client.nom));
+    if(!mandarNombres(id, CopiarCola(&client.nom)))
+    {
+        printf("no son iguales\n");
+    }
 
+    /*
     sprintf(bufferRes, "%d", client.nom.tamanio);
     send(id, bufferRes, strlen(bufferRes), 0);// de verdad
     recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
@@ -84,7 +90,7 @@ void opcion1(int id)
         result = strtoul(pathsote, NULL, 10);  
     }
     char *re = (result)? "si": "no"; 
-    printf("las colas %s son iguales", re);
+    printf("las colas %s son iguales", re);*/
 }
 
 void opcion3(int id)
@@ -121,7 +127,7 @@ int accionesMenu(int id, struct sockaddr_in server)
         opcion1(id);
         
     }
-    if (strcmp(opcion,"3") == 0)
+    else if (strcmp(opcion,"3") == 0)
     {
         opcion3(id);
     }    
@@ -130,7 +136,7 @@ int accionesMenu(int id, struct sockaddr_in server)
         printf("Se termina el ciclo.\n"); 
         return 1;
     }
-    
+    printf("esto a nada de retornar 0\n");
     // if ((recibido = recv(id, bufferRes, PACKET_SIZE, 0)) == -1)
     // {
     //      printf("Error en recv()asd \n");
