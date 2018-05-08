@@ -15,18 +15,17 @@ int igualesNombre(Cola * cola, int id_new)
     nodo * nodoActual = cola -> primero;
     Cola colaC;
     char nombre[PACKET_SIZE], hash[HASH_SIZE];
-    
+    Cola_Ordenar(cola);
     Inicializar(&colaC);
-
+    //Leer(cola);
     while (cont > 0)
     {
-
-        if ((recibido = recv(id_new, nombre, PACKET_SIZE, 0)) == -1)
+        if ((recv(id_new, nombre, PACKET_SIZE, 0)) == -1)
         {
             DeathByError("Error en recv() path\n");
         }else{
             send(id_new, "recibido", 8, 0);
-            //printf(" hoola vale %s\n", nombre);
+            //printf("%s\n", nombre);
         }
         if (strcmp(nombre, (Desencolar(cola)).path) != 0) 
         {
@@ -36,7 +35,7 @@ int igualesNombre(Cola * cola, int id_new)
         else send(id_new, "Igual", 9, 0);
         cont--;
     }
-    //Leer(cola);
+    Leer(cola);
     return 1;
 
 }
@@ -86,7 +85,7 @@ void opcion1(int id_new)
         // Comprobar contenido
         recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
         tam = strtoul(bufferRes, NULL, 10);
-        send(id_new, bufferRes, strlen(bufferRes), 0);//de mentira
+        send(id_new, bufferRes, PACKET_SIZE, 0);//de mentira
         while(tam--)
         {
             Cola *serverC, *clientC = receiveNPackets(id_new);
@@ -111,8 +110,10 @@ void opcion1(int id_new)
                 printf("las colas son iguales!!\n");
                 strcpy(pathsote, "1");
             }
-            send(id_new, pathsote, strlen(pathsote), 0);
+            
+            send(id_new, pathsote, PACKET_SIZE, 0);
             if(recv(id_new, pathsote, PACKET_SIZE, 0) == -1) printf("Error.\n");;
+            
             if(!strcmp(pathsote, "0")) break;
         }
     }

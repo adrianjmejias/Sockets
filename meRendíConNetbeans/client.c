@@ -6,18 +6,19 @@
 
 int mandarNombres(int id, Cola *nombres)
 {
-    printf("hola\n");
     int cont = nombres -> tamanio;
     nodo *nodoActual = nombres -> primero;
     char nombre[PACKET_SIZE];
     char confirmar[10];
-    Leer(nombres);
-    printf("hola\n");
+    Cola_Ordenar(nombres);
+    //Leer(nombres);
+
     while(cont > 0)
     {
-        
+        //printf("hooola\n");
         strcpy(nombre, nodoActual -> path);
-        if (send(id, nombre, strlen(nombre), 0) == -1)
+        //printf("%s\n", nombre);
+        if (send(id, nombre, PACKET_SIZE, 0) == -1)//No usar strlen nunca, gracias(?)
         {
             printf("Error en send() de nombres de archivo\n");
         }
@@ -27,7 +28,7 @@ int mandarNombres(int id, Cola *nombres)
             {
                 printf("errooooooooor\n");
             }
-            printf("%s\n", nombre);
+            //printf("%s\n", nombre);
         }
         
         if ((recv(id, confirmar, 9, 0)) == -1)
@@ -38,11 +39,13 @@ int mandarNombres(int id, Cola *nombres)
         if (strcmp(confirmar, "Diferente") == 0)
         {
             return 0;
-        } else return 1;
+        }
 
         nodoActual = nodoActual -> siguiente;
         cont--;
     }
+
+    return 1;
 }
 
 void opcion1(int id)
@@ -60,7 +63,7 @@ void opcion1(int id)
     send(id, bufferRes, 4, 0);
 
     //Nombres de archivos
-    //Leer(&client.nom);
+    ////Leer(&client.nom);
     
     if(!mandarNombres(id, CopiarCola(&client.nom)))
     {

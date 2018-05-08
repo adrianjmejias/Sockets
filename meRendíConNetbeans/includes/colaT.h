@@ -179,7 +179,40 @@ Cola* CopiarCola(Cola* in){
     return out;
 }
 
+void Nodo_Swap(nodo *nodo_a, nodo *nodo_b)
+{
+    char *pro_temp = nodo_a->path;
+    nodo_a->path = nodo_b->path;
+    nodo_b->path = pro_temp;
+}
+
+
+void Cola_Ordenar(Cola *cola)
+{
+    nodo *nodo_actual;
+    int ii, jj, tam_cola = cola->tamanio;
+
+    for (ii = 1; ii < tam_cola; ++ii)
+    {
+        nodo_actual = cola->primero;
+        for (jj = 0; jj < tam_cola - ii; ++jj)
+        {
+            if (strcmp(nodo_actual->siguiente->path, nodo_actual->path) > 0)
+            {
+                Nodo_Swap(nodo_actual, nodo_actual->siguiente);
+            }
+            nodo_actual = nodo_actual->siguiente;
+        }
+
+        //Print_Proceso(nodo_actual->path);
+        //nodo_actual = nodo_actual->siguiente;
+    }
+    //return cola;
+}
+
 #endif /* COLAT_H */
+
+
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
