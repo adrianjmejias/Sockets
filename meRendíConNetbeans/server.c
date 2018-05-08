@@ -63,6 +63,7 @@ int igualesNombre(Cola * cola, int id_new)
     //Leer(cola);
     while (cont > 0)
     {
+        CLEAN_BUFFER(nombre, PACKET_SIZE);
         if ((recv(id_new, nombre, PACKET_SIZE, 0)) == -1)
         {
             DeathByError("Error en recv() path\n");
@@ -146,7 +147,8 @@ void opcion3(int id_new)
     if (remove(pathCompleto) == 0)
     {
         printf("El achivo %s fue borrado\n", pathCompleto);
-    }else printf("El archivo no existe\n");
+    }
+    else printf("El archivo no existe\n");
 }
 
 int accionesServer(int id_new)

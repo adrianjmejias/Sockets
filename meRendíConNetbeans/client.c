@@ -11,7 +11,6 @@ int filtro3(int id, comp client)
     send(id, bufferRes, strlen(bufferRes), 0);// de verdad
     recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
     int result = 1;
-    printf("%s\n", bufferRes);
     int tam = client.nom.tamanio;
     while(tam--)
     {    
@@ -48,9 +47,10 @@ int mandarNombres(int id, Cola *nombres)
     while(cont > 0)
     {
         //printf("hooola\n");
+        CLEAN_BUFFER(nombre, PACKET_SIZE);
         strcpy(nombre, nodoActual -> path);
         //printf("%s\n", nombre);
-        if (send(id, nombre, PACKET_SIZE, 0) == -1)//No usar strlen nunca, gracias(?)
+        if (send(id, nombre, strlen(nombre), 0) == -1)
         {
             printf("Error en send() de nombres de archivo\n");
         }
@@ -99,14 +99,15 @@ void opcion1(int id)
     
     if(!mandarNombres(id, CopiarCola(&client.nom)))
     {
-        printf("no son iguales\n");
+        printf("No son iguales\n");
     }
     else if(!filtro3(id, client))
     {
-        printf("no son iguales\n");
-    }else
+        printf("No son iguales\n");
+    }
+    else
     {
-        printf("son iguales wooo\n");
+        printf("Son iguales wooo\n");
     }
     
 }

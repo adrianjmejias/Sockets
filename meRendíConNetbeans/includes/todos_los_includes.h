@@ -30,7 +30,7 @@
 //Done and tested
 Cola *receiveNPackets(int idsocket)
 {
-   // printf("entrando receiveNPackets \n");
+   printf("entrando receiveNPackets \n");
     
     char IO[PACKET_SIZE];
     int tam;
@@ -38,19 +38,19 @@ Cola *receiveNPackets(int idsocket)
     Inicializar(out);
     recv(idsocket, IO, PACKET_SIZE, 0);//recibir de verdad
     tam = strtoul(IO, NULL, 10);
-    send(idsocket, IO, strlen(IO),0);//enviar inutil
+    send(idsocket, IO, PACKET_SIZE,0);//enviar inutil
 
     while(tam--)
     {
         CLEAN_BUFFER(IO, PACKET_SIZE);
         recv(idsocket, IO, PACKET_SIZE,0);//recibir de verdad 
-        char *aux = malloc(sizeof(char) * strlen(IO));
+        char *aux = malloc(sizeof(char) * PACKET_SIZE);
         strcpy(aux,IO);
         Insertar(out, aux, NULL);
 
-        send(idsocket, IO, strlen(IO),0); //enviar inutil
+        send(idsocket, IO, PACKET_SIZE,0); //enviar inutil
     }
-    //printf("saliendo receiveNPackets \n");
+    printf("saliendo receiveNPackets \n");
     
     return out;
 }
