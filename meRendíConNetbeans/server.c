@@ -8,6 +8,49 @@
 */
 #define CARPETA "server"
 
+int filtro3(int id_new, comp server)
+{
+
+    int tam;
+    char bufferRes[PACKET_SIZE];
+    // Comprobar contenido
+    recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
+    tam = strtoul(bufferRes, NULL, 10);
+    send(id_new, bufferRes, PACKET_SIZE, 0);//de mentira
+    printf("%s\n", bufferRes);
+    while(tam--)
+    {
+        Cola *serverC, *clientC = receiveNPackets(id_new);
+        printf("******************\n");                
+        printf("cola client \n");
+        Leer(clientC);
+        char pathsote[PACKET_SIZE];
+        strcpy(pathsote, "server");
+        strcat(pathsote, Desencolar(&server.nom).path);
+        printf("pathsote %s--------------------------\n", pathsote);
+        serverC = segmentFile(pathsote);
+        printf("cola mia\n");
+        Leer(serverC);
+        printf("******************\n");
+        if(!sonIguales(clientC, serverC))
+        {
+            strcpy(pathsote, "0");
+            printf("las colas no son iguales por contenido\n");
+            tam = -1; //salgo del loop
+        }else
+        {
+            printf("las colas son iguales!!\n");
+            strcpy(pathsote, "1");
+        }
+        
+        send(id_new, pathsote, PACKET_SIZE, 0);
+        if(recv(id_new, pathsote, PACKET_SIZE, 0) == -1) printf("Error.\n");;
+        
+        if(!strcmp(pathsote, "0")) return 0;
+    }
+    return 1;
+}
+
 int igualesNombre(Cola * cola, int id_new)
 {
     int recibido;
@@ -78,44 +121,13 @@ void opcion1(int id_new)
     }
     
     //Tercer filtro
+    else if(!filtro3(id_new, server))
+    {
+        printf("No son iguales.\n");
+    }
     else
     {
-        printf("holaaaaaa\n");
-        int tam;
-        // Comprobar contenido
-        recv(id_new, bufferRes, PACKET_SIZE, 0);//de verdad
-        tam = strtoul(bufferRes, NULL, 10);
-        send(id_new, bufferRes, PACKET_SIZE, 0);//de mentira
-        while(tam--)
-        {
-            Cola *serverC, *clientC = receiveNPackets(id_new);
-            printf("******************\n");                
-            printf("cola client \n");
-            Leer(clientC);
-            char pathsote[PACKET_SIZE];
-            strcpy(pathsote, "server");
-            strcat(pathsote, Desencolar(&server.nom).path);
-            printf("pathsote %s--------------------------\n", pathsote);
-            serverC = segmentFile(pathsote);
-            printf("cola mia\n");
-            Leer(serverC);
-            printf("******************\n");
-            if(!sonIguales(clientC, serverC))
-            {
-                strcpy(pathsote, "0");
-                printf("las colas no son iguales por contenido\n");
-                tam = -1; //salgo del loop
-            }else
-            {
-                printf("las colas son iguales!!\n");
-                strcpy(pathsote, "1");
-            }
-            
-            send(id_new, pathsote, PACKET_SIZE, 0);
-            if(recv(id_new, pathsote, PACKET_SIZE, 0) == -1) printf("Error.\n");;
-            
-            if(!strcmp(pathsote, "0")) break;
-        }
+        printf("Son iguales.\n");
     }
 }
 

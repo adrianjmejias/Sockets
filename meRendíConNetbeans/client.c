@@ -3,6 +3,38 @@
 #include "includes/recorrerArchivos.h"
 #include "includes/segmentFile.h"
 
+int filtro3(int id, comp client)
+{
+    char bufferRes[PACKET_SIZE];
+
+    sprintf(bufferRes, "%d", client.nom.tamanio);
+    send(id, bufferRes, strlen(bufferRes), 0);// de verdad
+    recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
+    int result = 1;
+    printf("%s\n", bufferRes);
+    int tam = client.nom.tamanio;
+    while(tam--)
+    {    
+        char pathsote[PACKET_SIZE];
+
+        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+
+        strcpy(pathsote, "client");
+        strcat(pathsote, Desencolar(&client.nom).path);
+        sendNPackets(id, segmentFile(pathsote));
+
+        CLEAN_BUFFER(pathsote, PACKET_SIZE);
+
+        recv(id, pathsote, PACKET_SIZE, 0);
+        send(id, pathsote, strlen(pathsote), 0);
+
+        result = strtoul(pathsote, NULL, 10);  
+        if (!result) return result;
+    }
+    //char *re = (result)? "si": "no"; 
+    //printf("las colas %s son iguales", re);
+    return result;
+}
 
 int mandarNombres(int id, Cola *nombres)
 {
@@ -69,31 +101,12 @@ void opcion1(int id)
     {
         printf("no son iguales\n");
     }
-    else
+    else if(!filtro3(id, client))
     {
-        sprintf(bufferRes, "%d", client.nom.tamanio);
-        send(id, bufferRes, strlen(bufferRes), 0);// de verdad
-        recv(id, bufferRes, PACKET_SIZE, 0); //de mentira
-        int result = 1;
-        while(result && !colaVacia(&client.nom))
-        {    
-            char pathsote[PACKET_SIZE];
-
-            CLEAN_BUFFER(pathsote, PACKET_SIZE);
-
-            strcpy(pathsote, "client");
-            strcat(pathsote, Desencolar(&client.nom).path);
-            sendNPackets(id, segmentFile(pathsote));
-
-            CLEAN_BUFFER(pathsote, PACKET_SIZE);
-
-            recv(id, pathsote, PACKET_SIZE, 0);
-            send(id, pathsote, strlen(pathsote), 0);
-
-            result = strtoul(pathsote, NULL, 10);  
-        }
-        char *re = (result)? "si": "no"; 
-        printf("las colas %s son iguales", re);
+        printf("no son iguales\n");
+    }else
+    {
+        printf("son iguales wooo\n");
     }
     
 }
@@ -141,7 +154,6 @@ int accionesMenu(int id, struct sockaddr_in server)
         printf("Se termina el ciclo.\n"); 
         return 1;
     }
-    printf("esto a nada de retornar 0\n");
     // if ((recibido = recv(id, bufferRes, PACKET_SIZE, 0)) == -1)
     // {
     //      printf("Error en recv()asd \n");
