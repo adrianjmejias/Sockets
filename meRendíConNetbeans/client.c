@@ -15,11 +15,10 @@ int filtro3(int id, comp client)
     while(tam--)
     {    
         char pathsote[PACKET_SIZE];
-
         CLEAN_BUFFER(pathsote, PACKET_SIZE);
-
         strcpy(pathsote, "client");
         strcat(pathsote, Desencolar(&client.nom).path);
+        
         sendNPackets(id, segmentFile(pathsote));
 
         CLEAN_BUFFER(pathsote, PACKET_SIZE);
@@ -112,13 +111,38 @@ void opcion1(int id)
     
 }
 
+void opcion2(int id)
+{
+    char fileName[PACKET_SIZE];
+    char pathCompleto[PACKET_SIZE];
+
+    printf("INGRESE EL NOMBRE DEL ARCHIVO A AGREGAR:\n");
+    scanf("%*c%[^\n]", fileName);
+    strcpy(pathCompleto, buscarNombre("client",fileName));
+    printf("%s\n", pathCompleto);
+    if (!strcmp(pathCompleto, "\0"))
+    {
+        send(id,"N0_3X1ST3:4rCH1V0", PACKET_SIZE, 0);
+        printf("El archivo no existe en la carpeta cliente.\n");
+    }
+    else
+    {
+        send(id, fileName, PACKET_SIZE, 0);
+        send(id, pathCompleto, PACKET_SIZE, 0);
+        //Adri destácate
+        //Mandar paquetish
+        //printf("%s\n", buscarNombre("client",fileName));
+    }
+     
+}
+
 void opcion3(int id)
 {
     char fileName[PACKET_SIZE];
     char pathCompleto[PACKET_SIZE];
 
-    printf("INGRESE EL NOMBRE DEL ARCHIVO A ELIMINAR");
-    scanf("%s", fileName);
+    printf("INGRESE EL NOMBRE DEL ARCHIVO A ELIMINAR\n");
+    scanf("%*c%[^\n]", fileName);
     
     send(id, fileName, PACKET_SIZE, 0);
     sprintf(pathCompleto, "client/%s", fileName);
@@ -145,6 +169,10 @@ int accionesMenu(int id, struct sockaddr_in server)
     {
         opcion1(id);
         
+    }
+    else if (strcmp(opcion,"2") == 0)
+    {
+        opcion2(id);
     }
     else if (strcmp(opcion,"3") == 0)
     {

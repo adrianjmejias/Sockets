@@ -74,4 +74,50 @@ comp recorrerArchivos(char* path)
     return c;
 }
 
+char* buscarNombre(char* path, char* fileName)
+{
+    /*ignora esto(??*/
+    comp c;
+    Cola aVisitar;
+    struct dirent* dent;
+    DIR *dirp;
+
+    Inicializar(&aVisitar);
+    Insertar(&aVisitar, path, NULL);
+
+    while(1)
+    {   
+        nodo nodoAVisitar = Desencolar(&aVisitar);
+        dirp = opendir(nodoAVisitar.path);
+        
+        //Recorre archivos dentro del directorio
+        while(1)
+        {
+            dent = readdir(dirp);
+            if (dent == NULL) break;
+            char *pathGen= malloc(PACKET_SIZE* sizeof(char));
+            sprintf(pathGen, "%s/%s", nodoAVisitar.path, dent->d_name);
+
+            if (dent->d_type == DT_DIR)
+            {
+                if(strcmp(dent->d_name,".")!=0 && strcmp(dent->d_name,"..")!=0)
+                { 
+                    Insertar(&aVisitar, pathGen, NULL);
+                }   
+            }
+            else if(!strcmp(dent->d_name,fileName))
+            {
+                char *nombre = substr(pathGen, 6, strlen(pathGen));
+                return nombre;
+                
+            }
+        }
+
+        if (colaVacia(&aVisitar)) break;
+    }
+
+    return "\0";
+
+}
+
 #endif

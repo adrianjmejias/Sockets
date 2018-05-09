@@ -132,6 +132,47 @@ void opcion1(int id_new)
     }
 }
 
+void opcion2(int id_new)
+{
+    char fileName[PACKET_SIZE];
+    char pathCompleto[PACKET_SIZE];
+    char pathCompletoS[PACKET_SIZE];
+
+    if (recv(id_new, fileName, PACKET_SIZE, 0) == -1)
+    {
+        printf("Error en recv() \n");
+        exit(-1);
+    }
+    
+    //Si no existe el archivo en client
+    if (!strcmp(fileName, "N0_3X1ST3:4rCH1V0"))
+    {
+        return;
+    }
+
+    if (recv(id_new, pathCompleto, PACKET_SIZE, 0) == -1)
+    {
+        printf("Error en recv() \n");
+        exit(-1);
+    }
+    printf("%s\n", pathCompleto);
+    //Si existe el archivo en server se elimina
+    if (!strcmp(pathCompleto, buscarNombre("server",fileName)))
+    {
+        char pathsote[PACKET_SIZE];
+        sprintf(pathsote, "server/%s", pathCompleto);
+        printf("%s\n", pathsote);
+        if (remove(pathsote) == 0)
+        {
+            printf("El achivo %s fue borrado\n", pathsote);
+        }
+    }
+    
+    //Adri destácate
+    //crearArchivo(fileName);
+}
+
+
 void opcion3(int id_new)
 {
     char fileName[PACKET_SIZE];
@@ -176,7 +217,7 @@ int accionesServer(int id_new)
     }
     else if(strcmp(opcion,"2") == 0) 
     {
-        //strcpy(bufferRes,"Esta opción aun no está implementada.\n");      
+        opcion2(id_new);
     }
     else if(strcmp(opcion,"3") == 0) 
     {
