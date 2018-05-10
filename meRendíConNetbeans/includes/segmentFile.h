@@ -4,6 +4,8 @@
 #include "./colaT.h"
 #include "./todos_los_includes.h"
 
+
+
     //done and tested
     Cola* segmentFile(char *path){
         printf("entrando segmentFile\n");

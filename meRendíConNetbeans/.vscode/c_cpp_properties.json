@@ -3,7 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/cygwin64/usr/include"                
+                "C:/cygwin64/usr/include"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
@@ -17,5 +17,5 @@
             "cppStandard": "c++17"
         }
     ],
-    "version": 3
+    "version": 4
 }
