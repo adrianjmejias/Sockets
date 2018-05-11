@@ -130,6 +130,8 @@ void fileFromBuffer(char *completePath, char *buffer, size_t size){
 void sendFile(int id, char *name, char *path){
     char completePath[PACKET_SIZE] = "";
     char aux[PACKET_SIZE] = "";
+    char IO[1] = "0";
+    
     strcat(completePath, name);// esto deberia dar server/ o client/
     strcat(completePath, path);
 
@@ -138,9 +140,11 @@ void sendFile(int id, char *name, char *path){
 
     sprintf(aux, "%zu", size);
 
-    send(id, path, strlen(path), 0); // mando path
-    send(id, aux, strlen(aux), 0); //mando size
-    send(id, buffer, size, 0); // mando archivo
+    send(id, path, strlen(path), 0); //-------------------send// mando path
+    recv(id, IO, 1, 0);//-------------------recv
+    send(id, aux, strlen(aux), 0); //-------------------send//mando size
+    recv(id, IO, 1, 0);//-------------------recv
+    send(id, buffer, size, 0); //-------------------send// mando archivo
 
     free(buffer);
 }
@@ -150,19 +154,21 @@ void receiveFile(int id, char *name){
     char aux[PACKET_SIZE] = "";
     char path[PACKET_SIZE];
     char* buffer;
-    char buffer
+    char IO[1] = "0";
     size_t size;
 
-    recv(id, path, PACKET_SIZE, 0);
+    recv(id, path, PACKET_SIZE, 0);//-------------------recv
     strcat(completePath, name);
     strcat(completePath, path);
+    send(id, IO, 1, 0);//-------------------send
 
-    recv(id, aux, PACKET_SIZE, 0);
+    recv(id, aux, PACKET_SIZE, 0);//-------------------recv
     size = strtoul(aux, NULL, 0); 
     buffer = malloc(sizeof(char) * size);
+    send(id, IO, 1, 0);//-------------------send
+    
 
-
-    recv(id, buffer, size, 0);
+    recv(id, buffer, size, 0);//-------------------recv
 
     free(buffer);
 }

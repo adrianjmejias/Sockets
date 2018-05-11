@@ -136,7 +136,6 @@ void opcion2(int id_new)
 {
     char fileName[PACKET_SIZE];
     char pathCompleto[PACKET_SIZE];
-    char pathCompletoS[PACKET_SIZE];
 
     if (recv(id_new, fileName, PACKET_SIZE, 0) == -1)
     {
@@ -170,6 +169,8 @@ void opcion2(int id_new)
     
     //Adri destácate
     //crearArchivo(fileName);
+    printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
+    receiveFile(id_new, "server/");
 }
 
 

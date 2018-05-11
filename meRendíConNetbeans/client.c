@@ -130,8 +130,9 @@ void opcion2(int id)
         send(id, fileName, PACKET_SIZE, 0);
         send(id, pathCompleto, PACKET_SIZE, 0);
         //Adri destácate
+        printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
+        sendFile(id, "client/", fileName);
 
-        
         //Mandar paquetish
         //printf("%s\n", buscarNombre("client",fileName));
     }
