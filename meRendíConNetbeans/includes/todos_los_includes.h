@@ -90,14 +90,17 @@ void sendNPackets(int idsocket, Cola *in)
 }
 
 char* bufferFromFile(char* completePath){
+    printf("entrando bufferFromFile\n");
+    
     FILE *file;
     size_t size, ii;
     char *buffer;
     
     size = getFileSize(completePath);
     buffer =  malloc(sizeof(char) * size);
+    printf("archivo %s con size %zu\n", completePath, size);    
     file = fopen(completePath, "rb");
-    
+    CLEAN_BUFFER(buffer, size);
     ii = 0;
     while(size--){
 
@@ -106,13 +109,16 @@ char* bufferFromFile(char* completePath){
         ii++;
     }
     fclose(file);
+    printf("saliendo bufferFromFile\n");    
     return buffer;
 }
 
 void fileFromBuffer(char *completePath, char *buffer, size_t size){
+    printf("entrando fileFromBuffer\n");
+        
     FILE *file;
     size_t ii;
-
+    printf("archivo %s con size %zu\n", completePath, size);
     file = fopen(completePath, "wb");
     
     ii = 0;
@@ -124,38 +130,49 @@ void fileFromBuffer(char *completePath, char *buffer, size_t size){
     }
     printf("archivo %s listo\n", completePath);
     fclose(file);
+    printf("saliendo fileFromBuffer\n");    
 }
 
 
 void sendFile(int id, char *name, char *path){
+    printf("entrando sendFile\n");
+    
     char completePath[PACKET_SIZE] = "";
     char aux[PACKET_SIZE] = "";
     char IO[1] = "0";
     
+    CLEAN_BUFFER(completePath, PACKET_SIZE);
+    CLEAN_BUFFER(aux, PACKET_SIZE);
+
     strcat(completePath, name);// esto deberia dar server/ o client/
     strcat(completePath, path);
 
     size_t size = getFileSize(completePath);
     char *buffer = bufferFromFile(completePath);
-
+    
     sprintf(aux, "%zu", size);
 
     send(id, path, strlen(path), 0); //-------------------send// mando path
-    recv(id, IO, 1, 0);//-------------------recv
+    recv(id, IO, 1, MSG_WAITALL);//-------------------recv
     send(id, aux, strlen(aux), 0); //-------------------send//mando size
-    recv(id, IO, 1, 0);//-------------------recv
+    recv(id, IO, 1, MSG_WAITALL);//-------------------recv
     send(id, buffer, size, 0); //-------------------send// mando archivo
 
     free(buffer);
+    printf("saliendo sendFile\n");
 }
 
 void receiveFile(int id, char *name){
+    printf("entrando receiveFile\n");
     char completePath[PACKET_SIZE] = "";
     char aux[PACKET_SIZE] = "";
     char path[PACKET_SIZE];
     char* buffer;
     char IO[1] = "0";
     size_t size;
+    CLEAN_BUFFER(completePath, PACKET_SIZE);
+    CLEAN_BUFFER(path, PACKET_SIZE);
+    CLEAN_BUFFER(aux, PACKET_SIZE);
 
     recv(id, path, PACKET_SIZE, 0);//-------------------recv
     strcat(completePath, name);
@@ -166,11 +183,20 @@ void receiveFile(int id, char *name){
     size = strtoul(aux, NULL, 0); 
     buffer = malloc(sizeof(char) * size);
     send(id, IO, 1, 0);//-------------------send
-    
+    char* bufferTemp = buffer;
+    size_t count = 0, fileSize = size;
+    while(count!= size){
+        int recibidos= recv(id, bufferTemp, fileSize, MSG_WAITALL);//-------------------recv
 
-    recv(id, buffer, size, 0);//-------------------recv
+        count += recibidos;
+        bufferTemp += recibidos;
+        fileSize -= recibidos;
+    }
 
+    fileFromBuffer(completePath, buffer, size);
     free(buffer);
+    printf("saliendo receiveFile\n");
+    
 }
 
 

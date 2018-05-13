@@ -210,6 +210,39 @@ void Cola_Ordenar(Cola *cola)
     //return cola;
 }
 
+void Delete(char *path, Cola *cola)
+{
+    nodo ret;
+
+    // printf("D");
+    if (cola -> primero != NULL)
+    {
+
+        int tam = cola -> tamanio;
+
+        nodo * nodoActual = cola -> primero;
+        nodo * nodoAElim = cola -> primero -> siguiente;
+        
+        while(nodoAElim != NULL && tam > 0)
+        {
+            printf("%s\n", nodoActual -> path);
+            printf("%s\n", nodoAElim -> path);
+
+            if (!strcmp(nodoActual -> path, path))
+            {
+                
+                break;
+            }
+
+            nodoActual = nodoActual -> siguiente;
+            nodoAElim = nodoAElim -> siguiente;
+
+            tam--;
+        }
+
+    }
+
+}
 #endif /* COLAT_H */
 
 

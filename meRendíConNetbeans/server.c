@@ -84,7 +84,7 @@ int igualesNombre(Cola * cola, int id_new)
 
 }
 
-void opcion1(int id_new)
+void opcion1_1(int id_new)
 {
     char bufferRes[PACKET_SIZE];
     //comp client = recorrerArchivos("client");
@@ -132,44 +132,66 @@ void opcion1(int id_new)
     }
 }
 
+void opcion1(int id_new)
+{
+    comp server = recorrerArchivos("server");
+    int tam = server.nom.tamanio;
+    char bufferRes[PACKET_SIZE];
+    
+    //Recibir tamanio de lista cliente
+    CLEAN_BUFFER(bufferRes, PACKET_SIZE);
+    recv(id_new, bufferRes, PACKET_SIZE, 0);
+    
+    tam = strtoul(bufferRes, NULL, 10);
+    while(tam--)
+    {
+        char *buffer = malloc(sizeof(char) * PACKET_SIZE);
+        recv(id_new, buffer, PACKET_SIZE,0);//recibir de verdad 
+        //Delete(buffer, &server.nom);
+        receiveFile(id_new, "server/");
+
+    }
+
+}
+
 void opcion2(int id_new)
 {
     char fileName[PACKET_SIZE];
     char pathCompleto[PACKET_SIZE];
 
-    if (recv(id_new, fileName, PACKET_SIZE, 0) == -1)
-    {
-        printf("Error en recv() \n");
-        exit(-1);
-    }
+    // if (recv(id_new, fileName, PACKET_SIZE, 0) == -1)
+    // {
+    //     printf("Error en recv() \n");
+    //     exit(-1);
+    // }
     
-    //Si no existe el archivo en client
-    if (!strcmp(fileName, "N0_3X1ST3:4rCH1V0"))
-    {
-        return;
-    }
+    // //Si no existe el archivo en client
+    // if (!strcmp(fileName, "N0_3X1ST3:4rCH1V0"))
+    // {
+    //     return;
+    // }
 
-    if (recv(id_new, pathCompleto, PACKET_SIZE, 0) == -1)
-    {
-        printf("Error en recv() \n");
-        exit(-1);
-    }
-    printf("%s\n", pathCompleto);
-    //Si existe el archivo en server se elimina
-    if (!strcmp(pathCompleto, buscarNombre("server",fileName)))
-    {
-        char pathsote[PACKET_SIZE];
-        sprintf(pathsote, "server/%s", pathCompleto);
-        printf("%s\n", pathsote);
-        if (remove(pathsote) == 0)
-        {
-            printf("El achivo %s fue borrado\n", pathsote);
-        }
-    }
+    // if (recv(id_new, pathCompleto, PACKET_SIZE, 0) == -1)
+    // {
+    //     printf("Error en recv() \n");
+    //     exit(-1);
+    // }
+    // printf("%s\n", pathCompleto);
+    // //Si existe el archivo en server se elimina
+    // if (!strcmp(pathCompleto, buscarNombre("server",fileName)))
+    // {
+    //     char pathsote[PACKET_SIZE];
+    //     sprintf(pathsote, "server/%s", pathCompleto);
+    //     printf("%s\n", pathsote);
+    //     if (remove(pathsote) == 0)
+    //     {
+    //         printf("El achivo %s fue borrado\n", pathsote);
+    //     }
+    // }
     
     //Adri destácate
     //crearArchivo(fileName);
-    printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
+   // printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
     receiveFile(id_new, "server/");
 }
 

@@ -79,7 +79,7 @@ int mandarNombres(int id, Cola *nombres)
     return 1;
 }
 
-void opcion1(int id)
+void opcion1_1(int id)
 {
     char bufferRes[PACKET_SIZE];
     comp client = recorrerArchivos("client");
@@ -111,6 +111,28 @@ void opcion1(int id)
     
 }
 
+void opcion1(int id)
+{
+    comp client = recorrerArchivos("client");
+    int tam = client.nom.tamanio;
+    char bufferRes[PACKET_SIZE];
+
+    //Mandar tamanio de lista cliente
+    sprintf(bufferRes, "%d", tam);
+    send(id, bufferRes, strlen(bufferRes), 0);
+    while(tam--)
+    {
+        char *buffer = malloc(sizeof(char) * PACKET_SIZE);
+        buffer = Desencolar(&client.nom).path;
+        send(id, buffer, PACKET_SIZE, 0);
+        sendFile(id, "client", buffer);
+
+    }
+
+
+
+}
+
 void opcion2(int id)
 {
     char fileName[PACKET_SIZE];
@@ -119,23 +141,22 @@ void opcion2(int id)
     printf("INGRESE EL NOMBRE DEL ARCHIVO A AGREGAR:\n");
     scanf("%*c%[^\n]", fileName);
     strcpy(pathCompleto, buscarNombre("client",fileName));
-    printf("%s\n", pathCompleto);
-    if (!strcmp(pathCompleto, "\0"))
+    /*if (!strcmp(pathCompleto, "\0"))
     {
-        send(id,"N0_3X1ST3:4rCH1V0", PACKET_SIZE, 0);
+        //send(id,"N0_3X1ST3:4rCH1V0", PACKET_SIZE, 0);
         printf("El archivo no existe en la carpeta cliente.\n");
     }
     else
-    {
-        send(id, fileName, PACKET_SIZE, 0);
-        send(id, pathCompleto, PACKET_SIZE, 0);
-        //Adri destácate
-        printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
+    {*/
+        // send(id, fileName, PACKET_SIZE, 0);
+        // send(id, pathCompleto, PACKET_SIZE, 0);
+        // //Adri destácate
+        // printf("filename %s, pathCompleto %s\n", fileName, pathCompleto);
         sendFile(id, "client/", fileName);
 
         //Mandar paquetish
         //printf("%s\n", buscarNombre("client",fileName));
-    }
+    //}
      
 }
 
