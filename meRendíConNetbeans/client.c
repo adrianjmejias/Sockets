@@ -124,12 +124,21 @@ void opcion1(int id)
     {
         char *buffer = malloc(sizeof(char) * PACKET_SIZE);
         buffer = Desencolar(&client.nom).path;
-        send(id, buffer, PACKET_SIZE, 0);
         sendFile(id, "client", buffer);
+        printf("llega esto: %s\n", buffer);
+        send(id, buffer, PACKET_SIZE, 0);
+        //recv(id, buffer, PACKET_SIZE, 0);
 
     }
 
-
+    CLEAN_BUFFER(bufferRes, PACKET_SIZE);
+    recv(id, bufferRes, PACKET_SIZE, 0);
+    int tamS = strtoul(bufferRes, NULL, 10);
+    
+    while(tamS--)
+    {
+        receiveFile(id, "client");
+    }
 
 }
 

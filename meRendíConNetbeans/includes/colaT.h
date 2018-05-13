@@ -220,21 +220,39 @@ void Delete(char *path, Cola *cola)
 
         int tam = cola -> tamanio;
 
-        nodo * nodoActual = cola -> primero;
+        nodo * nodoAnterior = cola -> primero;
         nodo * nodoAElim = cola -> primero -> siguiente;
         
-        while(nodoAElim != NULL && tam > 0)
+        if (!strcmp(nodoAnterior -> path, path))
         {
-            printf("%s\n", nodoActual -> path);
+            cola -> primero = nodoAElim;
+            nodoAnterior -> siguiente = NULL;
+            cola -> tamanio --;
+            free(nodoAnterior);
+            return;
+        }
+
+        while(tam > 0 && nodoAElim != NULL)
+        {
+            printf("%s\n", nodoAnterior -> path);
             printf("%s\n", nodoAElim -> path);
 
-            if (!strcmp(nodoActual -> path, path))
+            if (!strcmp(nodoAElim -> path, path))
             {
-                
-                break;
+                if (!strcmp(nodoAElim -> path, cola -> ultimo -> path))
+                {
+                    cola -> ultimo = nodoAnterior;
+                }
+
+                nodoAnterior -> siguiente = nodoAElim -> siguiente;
+                nodoAElim -> siguiente = NULL;
+                free(nodoAElim);
+                cola -> tamanio --; 
+
+                return;
             }
 
-            nodoActual = nodoActual -> siguiente;
+            nodoAnterior = nodoAnterior -> siguiente;
             nodoAElim = nodoAElim -> siguiente;
 
             tam--;

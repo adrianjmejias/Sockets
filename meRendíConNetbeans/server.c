@@ -135,23 +135,38 @@ void opcion1_1(int id_new)
 void opcion1(int id_new)
 {
     comp server = recorrerArchivos("server");
-    int tam = server.nom.tamanio;
     char bufferRes[PACKET_SIZE];
     
     //Recibir tamanio de lista cliente
     CLEAN_BUFFER(bufferRes, PACKET_SIZE);
     recv(id_new, bufferRes, PACKET_SIZE, 0);
     
-    tam = strtoul(bufferRes, NULL, 10);
+    int tam = strtoul(bufferRes, NULL, 10);
     while(tam--)
     {
+        receiveFile(id_new, "server");
         char *buffer = malloc(sizeof(char) * PACKET_SIZE);
         recv(id_new, buffer, PACKET_SIZE,0);//recibir de verdad 
-        //Delete(buffer, &server.nom);
-        receiveFile(id_new, "server/");
-
+        //send(id_new, buffer, PACKET_SIZE,0);//recibir de verdad 
+        printf("llega esto: %s\n", buffer);
+        
+        Delete(buffer, &server.nom);
+        printf("sali del delete\n");
     }
 
+    Leer(&server.nom);
+    int tamS = server.nom.tamanio;
+    if (!tamS) return;
+    
+    //Mandar tamanio de lista server
+    CLEAN_BUFFER(bufferRes, PACKET_SIZE);
+    sprintf(bufferRes, "%d", tamS);
+    send(id_new, bufferRes, strlen(bufferRes), 0);
+    printf("Agregamos los archivos de server que no estan en cliente\n");
+    while(tamS--)
+    {
+        sendFile(id_new, "server", Desencolar(&server.nom).path);
+    }
 }
 
 void opcion2(int id_new)
